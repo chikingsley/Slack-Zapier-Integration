@@ -55,7 +55,7 @@ slackApp.event('app_home_opened', async ({ event, client, logger }) => {
       },
     });
   } catch (error) {
-    logger.error(`Error publishing home tab: ${error}`);
+    logger.error(`Error publishing home tab: ${error.message} Stack: ${error.stack}`);
   }
 });
 
@@ -73,6 +73,7 @@ async function getUserInfo(client, userId) {
         return null;
       }
     } catch (error) {
+      logger.error('error in getuserinfo function')
       if (error.response.headers['retry-after']) {
         await new Promise((resolve) =>
           setTimeout(resolve, parseInt(error.response.headers['retry-after']) * 1000)
@@ -84,7 +85,6 @@ async function getUserInfo(client, userId) {
 
     retries++;
   }
-
   throw new Error('Maximum retry attempts exceeded');
 }
   
@@ -160,7 +160,7 @@ async function getUserInfo(client, userId) {
         ],
       });
     } catch (error) {
-      logger.error(error);
+      logger.error(`Error in 'hi' command: ${error.message} Stack: ${error.stack}`);
     }
   });
   
@@ -172,7 +172,7 @@ slackApp.action('Create SoW', async ({ ack, body, say }) => { // fixed action_id
     // Say something in response
     await say("Cool, Let's create a new statement of work (SoW)");
   }catch (error) {
-      logger.error(error);
+    logger.error(`Error in 'Create SoW' action: ${error.message} Stack: ${error.stack}`);
     }
     say({
           text: `Who are we doing this for?`,
@@ -196,7 +196,7 @@ slackApp.action('Drink', async ({ ack, say }) => { // fixed action_id
     // Say something in response
     await say('Enjoy your beer!');
   } catch (error) {
-    logger.error(error);
+    logger.error(`Error in 'Drink' action: ${error.message} Stack: ${error.stack}`);
   }
 });
 
@@ -208,7 +208,7 @@ slackApp.action('Chase Approval', async ({ ack, say }) => { // fixed action_id
     // Say something in response
     await say("Let's get that document approved!");
   } catch (error) {
-    logger.error(error);
+    logger.error(`Error in 'Chase Approval' action: ${error.message} Stack: ${error.stack}`);
   }
 });
 
