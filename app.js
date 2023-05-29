@@ -153,33 +153,74 @@ slackApp.message('hi', async ({ message, say, client }) => {
 
   
 // Action listener for "Create SoW" button click
-slackApp.action('Create SoW', async ({ ack, body, say }) => { // fixed action_id
-    ack();
-    say("Cool, Let's create a new statement of work (SoW)");
-    say({
-      text: `Who are we doing this for?`,
+slackApp.action('Create SoW', async ({ ack, body, respond }) => {
+  try {
+    await ack(); // Acknowledge the action
+
+    // Prevent multiple clicks
+    if (body.message.thread_ts) {
+      // If the message has a thread timestamp, it means it is a threaded reply
+      return; // Exit the action listener
+    }
+
+    // Update the original message with a new text and blocks
+    await respond({
+      text: "Cool, Let's create a new statement of work (SoW)",
       blocks: [
         {
           type: 'section',
           text: {
             type: 'mrkdwn',
-            text: `Which company are we doing this for?`,
+            text: `Who are we doing this for?`,
           },
         },
       ],
+      replace_original: true,
     });
+  } catch (error) {
+    logger.error(`Error in 'Create SoW' action: ${error.message} Stack: ${error.stack}`);
+  }
 });
 
-// Action listener for "Drink" button click
-slackApp.action('Drink', ({ ack, say }) => {
-  ack(); // Acknowledge the action
-  say('Enjoy your beer!'); // Say something in response
+slackApp.action('Drink', async ({ ack, respond, body }) => {
+  try {
+    await ack(); // Acknowledge the action
+
+    // Prevent multiple clicks
+    if (body.message.thread_ts) {
+      // If the message has a thread timestamp, it means it is a threaded reply
+      return; // Exit the action listener
+    }
+
+    // Update the original message with a new text
+    await respond({
+      text: 'Enjoy your beer!',
+      replace_original: true,
+    });
+  } catch (error) {
+    logger.error(`Error in 'Drink' action: ${error.message} Stack: ${error.stack}`);
+  }
 });
 
 // Action listener for "Chase Approval" button click
-slackApp.action('Chase Approval', ({ ack, say }) => {
-  ack(); // Acknowledge the action
-  say("Let's get that document approved!"); // Say something in response
+slackApp.action('Chase Approval', async ({ ack, respond, body }) => {
+  try {
+    await ack(); // Acknowledge the action
+
+    // Prevent multiple clicks
+    if (body.message.thread_ts) {
+      // If the message has a thread timestamp, it means it is a threaded reply
+      return; // Exit the action listener
+    }
+
+    // Update the original message with a new text
+    await respond({
+      text: "Let's get that document approved!",
+      replace_original: true,
+    });
+  } catch (error) {
+    logger.error(`Error in 'Chase Approval' action: ${error.message} Stack: ${error.stack}`);
+  }
 });
 
 // Start your app
