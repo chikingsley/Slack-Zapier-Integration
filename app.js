@@ -1,13 +1,3 @@
-//const http = require('http');
-//const expressApp = require('./app');  // renamed to expressApp
-
-//const port = process.env.PORT || 3000;  // typo fixed
-//const server = http.createServer(expressApp);  // typo fixed
-
-//server.listen(port, hostname, () => {  // removed hostname
-//  console.log(`Started on port ${port}`);  // used backticks for template literal
-//});
-
 require('dotenv').config(); // to load the environment variables
 
 const { App, LogLevel } = require('@slack/bolt');
@@ -166,6 +156,18 @@ slackApp.action('Create SoW', async ({ ack, body, say }) => { // fixed action_id
   }catch (error) {
       console.error(error);
     }
+    say({
+          text: `Who are we doing this for?`,
+          blocks: [
+            {
+              type: 'section',
+              text: {
+                type: 'mrkdwn',
+                text: `Which company are we doing this for?`,
+              },
+            },
+          ],
+        });
 });
 
 // Action listener for "Drink" button click
@@ -195,6 +197,5 @@ slackApp.action('Chase Approval', async ({ ack, say }) => { // fixed action_id
 // Start your app
 (async () => {
   await slackApp.start(process.env.PORT || 3000);
-  //const server = http.createServer(slackApp);
   console.log('⚡️ Bolt app is running!');
 })();
