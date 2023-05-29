@@ -11,7 +11,6 @@ const slackApp = new App({  // renamed to slackApp
 
 // Event listener for app home opened event
 slackApp.event('app_home_opened', async ({ event, client, logger }) => {
-  try {
     // Push a view to the Home tab
     await client.views.publish({
       // the user that opened your app's app home
@@ -54,9 +53,6 @@ slackApp.event('app_home_opened', async ({ event, client, logger }) => {
         ],
       },
     });
-  } catch (error) {
-    logger.error(`Error publishing home tab: ${error.message} Stack: ${error.stack}`);
-  }
 });
 
 
@@ -89,127 +85,101 @@ async function getUserInfo(client, userId) {
 }
   
   // Message event listener for "hi" command
-  slackApp.message('hi', async ({ message, say, client }) => {
-    try {
-      const user = await getUserInfo(client, message.user);
-      if (user) {
-        const fullName = user.profile.real_name;
-        say({
+slackApp.message('hi', async ({ message, say, client }) => {
+  const user = await getUserInfo(client, message.user);
+  const fullName = user && user.profile.real_name;
+  say({
+    text: `Hello, ${fullName}!`,
+    blocks: [
+      {
+        type: 'section',
+        text: {
+          type: 'mrkdwn',
           text: `Hello, ${fullName}!`,
-          blocks: [
-            {
-              type: 'section',
-              text: {
-                type: 'mrkdwn',
-                text: `Hello, *${fullName}*!`,
-              },
-            },
-          ],
-        });
-      } else {
-        say('Hello!');
-      }
-  
-      say({
-        blocks: [
+        },
+      },
+    ],
+  });
+  say({
+    blocks: [
+      {
+        type: 'section',
+        text: {
+          type: 'plain_text',
+          text: "It's good to see you 😇. What do you want to do today?",
+        },
+      },
+      {
+        type: 'section',
+        text: {
+          type: 'plain_text',
+          text: 'Pick one⬇️',
+        },
+      },
+      {
+        type: 'actions',
+        elements: [
           {
-            type: 'section',
+            type: 'button',
             text: {
               type: 'plain_text',
-              text: "Hey, what's up? Good to see you 😇. What do you want to do today?",
+              text: 'Approve',
             },
+            value: "click_me_123",
+            action_id: 'Chase Approval'
           },
           {
-            type: 'section',
+            type: 'button',
             text: {
               type: 'plain_text',
-              text: 'Pick one⬇️',
+              text: 'Create SoW',
             },
+            value: "click_me456",
+            action_id: 'Create SoW'
           },
           {
-            type: 'actions',
-            elements: [
-              {
-                type: 'button',
-                text: {
-                  type: 'plain_text',
-                  text: 'Approve',
-                },
-                value: "click_me_123",
-                action_id: 'Chase Approval'
-              },
-              {
-                type: 'button',
-                text: {
-                  type: 'plain_text',
-                  text: 'Create SoW',
-                },
-                value: "click_me456",
-                action_id: 'Create SoW'
-              },
-              {
-                type: 'button',
-                text: {
-                  type: 'plain_text',
-                  text: 'Drink a Beer',
-                },
-                action_id: 'Drink',
-              },
-            ],
+            type: 'button',
+            text: {
+              type: 'plain_text',
+              text: 'Drink a Beer',
+            },
+            action_id: 'Drink',
           },
         ],
-      });
-    } catch (error) {
-      logger.error(`Error in 'hi' command: ${error.message} Stack: ${error.stack}`);
-    }
+      },
+    ],
   });
+});
+
   
 // Action listener for "Create SoW" button click
 slackApp.action('Create SoW', async ({ ack, body, say }) => { // fixed action_id
-  try {
-    // Acknowledge the action
-    await ack();
-    // Say something in response
-    await say("Cool, Let's create a new statement of work (SoW)");
-  }catch (error) {
-    logger.error(`Error in 'Create SoW' action: ${error.message} Stack: ${error.stack}`);
-    }
+    ack();
+    say("Cool, Let's create a new statement of work (SoW)");
     say({
-          text: `Who are we doing this for?`,
-          blocks: [
-            {
-              type: 'section',
-              text: {
-                type: 'mrkdwn',
-                text: `Which company are we doing this for?`,
-              },
-            },
-          ],
-        });
+      text: `Who are we doing this for?`,
+      blocks: [
+        {
+          type: 'section',
+          text: {
+            type: 'mrkdwn',
+            text: `Which company are we doing this for?`,
+          },
+        },
+      ],
+    });
 });
 
 // Action listener for "Drink" button click
-slackApp.action('Drink', async ({ ack, say }) => { // fixed action_id
-  try {
-    // Acknowledge the action
-    await ack();
-    // Say something in response
-    await say('Enjoy your beer!');
-  } catch (error) {
-    logger.error(`Error in 'Drink' action: ${error.message} Stack: ${error.stack}`);
-  }
+slackApp.action('Drink', ({ ack, say }) => {
+  ack(); // Acknowledge the action
+  say('Enjoy your beer!'); // Say something in response
 });
 
 // Action listener for "Chase Approval" button click
-slackApp.action('Chase Approval', async ({ ack, say }) => { // fixed action_id
-    try {
-        // Acknowledge the action
-        await ack();
-    // Say something in response
-    await say("Let's get that document approved!");
-  } catch (error) {
-    logger.error(`Error in 'Chase Approval' action: ${error.message} Stack: ${error.stack}`);
-  }
+slackApp.action('Chase Approval', ({ ack, say }) => {
+  ack(); // Acknowledge the action
+  say("Let's get that document approved!"); // Say something in response
 });
 
 // Start your app
