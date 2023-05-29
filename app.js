@@ -1,16 +1,26 @@
+//const http = require('http');
+//const expressApp = require('./app');  // renamed to expressApp
+
+//const port = process.env.PORT || 3000;  // typo fixed
+//const server = http.createServer(expressApp);  // typo fixed
+
+//server.listen(port, hostname, () => {  // removed hostname
+//  console.log(`Started on port ${port}`);  // used backticks for template literal
+//});
+
 require('dotenv').config(); // to load the environment variables
 
 const { App, LogLevel } = require('@slack/bolt');
 
 // Initializes your app with your bot token and signing secret from environment variables
-const app = new App({
+const slackApp = new App({  // renamed to slackApp
   token: process.env.SLACK_BOT_TOKEN,
   signingSecret: process.env.SLACK_SIGNING_SECRET,
   logLevel: LogLevel.DEBUG, // Set to a desired log level (optional)
 });
 
 // Event listener for app home opened event
-app.event('app_home_opened', async ({ event, client, logger }) => {
+slackApp.event('app_home_opened', async ({ event, client, logger }) => {
   try {
     // Push a view to the Home tab
     await client.views.publish({
@@ -71,7 +81,7 @@ async function getUserInfo(client, userId) {
 }
   
   // Message event listener for "hi" command
-  app.message('hi', async ({ message, say, client }) => {
+  slackApp.message('hi', async ({ message, say, client }) => {
     try {
       const user = await getUserInfo(client, message.user);
       if (user) {
@@ -147,7 +157,7 @@ async function getUserInfo(client, userId) {
   });
   
 // Action listener for "Create SoW" button click
-app.action('Create SoW', async ({ ack, body, say }) => { // fixed action_id
+slackApp.action('Create SoW', async ({ ack, body, say }) => { // fixed action_id
   try {
     // Acknowledge the action
     await ack();
@@ -159,7 +169,7 @@ app.action('Create SoW', async ({ ack, body, say }) => { // fixed action_id
 });
 
 // Action listener for "Drink" button click
-app.action('Drink', async ({ ack, say }) => { // fixed action_id
+slackApp.action('Drink', async ({ ack, say }) => { // fixed action_id
   try {
     // Acknowledge the action
     await ack();
@@ -171,7 +181,7 @@ app.action('Drink', async ({ ack, say }) => { // fixed action_id
 });
 
 // Action listener for "Chase Approval" button click
-app.action('Chase Approval', async ({ ack, say }) => { // fixed action_id
+slackApp.action('Chase Approval', async ({ ack, say }) => { // fixed action_id
     try {
         // Acknowledge the action
         await ack();
@@ -184,6 +194,7 @@ app.action('Chase Approval', async ({ ack, say }) => { // fixed action_id
 
 // Start your app
 (async () => {
-  await app.start(process.env.PORT || 3000);
+  await slackApp.start(process.env.PORT || 3000);
+  //const server = http.createServer(slackApp);
   console.log('⚡️ Bolt app is running!');
 })();
