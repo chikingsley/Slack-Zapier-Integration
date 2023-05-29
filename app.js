@@ -55,7 +55,6 @@ slackApp.event('app_home_opened', async ({ event, client, logger }) => {
     });
 });
 
-
 // Function to get user info from user_id
 async function getUserInfo(client, userId) {
   let retries = 0;
@@ -88,7 +87,8 @@ async function getUserInfo(client, userId) {
 slackApp.message('hi', async ({ message, say, client }) => {
   const user = await getUserInfo(client, message.user);
   const fullName = user && user.profile.real_name;
-  //object used to create a message the greets the user with their full name
+  
+  // Object used to create a message that greets the user with their full name
   const greetingMessage = {
     text: `Hello, ${fullName}!`,
     blocks: [
@@ -102,7 +102,7 @@ slackApp.message('hi', async ({ message, say, client }) => {
     ],
   };
 
-  say({
+  const buttonMessage = {
     blocks: [
       {
         type: 'section',
@@ -150,80 +150,57 @@ slackApp.message('hi', async ({ message, say, client }) => {
         ],
       },
     ],
-  });
-});
+  };
 
+  const { body: greetingResponse } = await say(greetingMessage); // Store the response of the greeting message
+  const greetingMessageId = greetingResponse.message.ts; // Get the message ID of the greeting message
+
+  const { body: buttonResponse } = await say(buttonMessage); // Store the response of the button message
+  const buttonMessageId = buttonResponse.message.ts; // Get the message ID of the button message
+    // Action listener for button clicks
+    slackApp.action(['Approve', 'Create SoW', 'Drink'], async ({ ack, body, client }) => {
+      await ack(); // Acknowledge the action
   
-// Action listener for "Create SoW" button click
-slackApp.action('Create SoW', async ({ ack, body, respond }) => {
-  try {
-    await ack(); // Acknowledge the action
-
-    // Prevent multiple clicks
-    if (body.message.thread_ts) {
-      // If the message has a thread timestamp, it means it is a threaded reply
-      return; // Exit the action listener
-    }
-
-    // Update the original message with a new text and blocks
-    await respond({
-      text: "Cool, Let's create a new statement of work (SoW)",
-      blocks: [
-        {
-          type: 'section',
-          text: {
-            type: 'mrkdwn',
-            text: `Who are we doing this for?`,
+      // Get the clicked button value
+      const clickedButtonValue = body.actions[0].value;
+  
+      // Update the button message with the text of the clicked button
+      const updatedButtonMessage = {
+        ...buttonMessage,
+        blocks: [
+          buttonMessage.blocks[0], // Preserve the first two blocks
+          {
+            type: 'section',
+            text: {
+              type: 'mrkdwn',
+              text: `You clicked "${clickedButtonValue}"`,
+            },
           },
-        },
-      ],
-      replace_original: true,
+        ],
+      };
+  
+      // Update the button message with the text of the clicked button
+      await client.chat.update({
+        channel: message.channel,
+        ts: buttonMessageId,
+        blocks: updatedButtonMessage.blocks,
+      });
     });
-  } catch (error) {
-    logger.error(`Error in 'Create SoW' action: ${error.message} Stack: ${error.stack}`);
-  }
-});
-
-slackApp.action('Drink', async ({ ack, respond, body }) => {
-  try {
-    await ack(); // Acknowledge the action
-
-    // Prevent multiple clicks
-    if (body.message.thread_ts) {
-      // If the message has a thread timestamp, it means it is a threaded reply
-      return; // Exit the action listener
-    }
-
-    // Update the original message with a new text
-    await respond({
-      text: 'Enjoy your beer!',
-      replace_original: true,
-    });
-  } catch (error) {
-    logger.error(`Error in 'Drink' action: ${error.message} Stack: ${error.stack}`);
-  }
-});
-
-// Action listener for "Chase Approval" button click
-slackApp.action('Chase Approval', async ({ ack, respond, body }) => {
-  try {
-    await ack(); // Acknowledge the action
-
-    // Prevent multiple clicks
-    if (body.message.thread_ts) {
-      // If the message has a thread timestamp, it means it is a threaded reply
-      return; // Exit the action listener
-    }
-
-    // Update the original message with a new text
-    await respond({
-      text: "Let's get that document approved!",
-      replace_original: true,
-    });
-  } catch (error) {
-    logger.error(`Error in 'Chase Approval' action: ${error.message} Stack: ${error.stack}`);
-  }
-});
+  
+    // Delete original messages after a certain duration
+    setTimeout(async () => {
+      await Promise.all([
+        client.chat.delete({
+          channel: message.channel,
+          ts: greetingMessageId,
+        }),
+        client.chat.delete({
+          channel: message.channel,
+          ts: buttonMessageId,
+        }),
+      ]);
+    }, 5000);
+  });
 
 // Start your app
 (async () => {
