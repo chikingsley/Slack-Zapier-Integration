@@ -14,12 +14,31 @@ slackApp.event('app_home_opened', async ({ event, client, logger }) => {
   try {
     // Push a view to the Home tab
     await client.views.publish({
+      // the user that opened your app's app home
       user_id: event.user,
+      // the view object that appears in the app home
       view: {
         type: 'home',
         callback_id: 'home_view',
+        // body of the view
         blocks: [
-          // ... your blocks
+          {
+            type: 'section',
+            text: {
+              type: 'mrkdwn',
+              text: '*Welcome to your _App\'s Home_* :tada:',
+            },
+          },
+          {
+            type: 'divider',
+          },
+          {
+            type: 'section',
+            text: {
+              type: 'mrkdwn',
+              text: "This button won't do much for now but you can set up a listener for it using the `actions()` method and passing its unique `action_id`. See an example in the `examples` folder within your Bolt app.",
+            },
+          },
           {
             type: 'actions',
             elements: [
@@ -29,7 +48,6 @@ slackApp.event('app_home_opened', async ({ event, client, logger }) => {
                   type: 'plain_text',
                   text: 'Click me!',
                 },
-                action_id: 'button_click', // added action_id
               },
             ],
           },
@@ -41,11 +59,11 @@ slackApp.event('app_home_opened', async ({ event, client, logger }) => {
   }
 });
 
+
 // Function to get user info from user_id
 async function getUserInfo(client, userId) {
   let retries = 0;
   const maxRetries = 5; // maximum number of retries
-
   while (retries < maxRetries) {
     try {
       const response = await client.users.info({ user: userId });
@@ -75,7 +93,7 @@ async function getUserInfo(client, userId) {
     try {
       const user = await getUserInfo(client, message.user);
       if (user) {
-        const fullName = userInfo.profile.real_name;
+        const fullName = user.profile.real_name;
         say({
           text: `Hello, ${fullName}!`,
           blocks: [
@@ -83,7 +101,7 @@ async function getUserInfo(client, userId) {
               type: 'section',
               text: {
                 type: 'mrkdwn',
-                text: `Hello, *${user.real_name}*!`,
+                text: `Hello, *${fullName}*!`,
               },
             },
           ],
@@ -142,7 +160,7 @@ async function getUserInfo(client, userId) {
         ],
       });
     } catch (error) {
-      console.error(error);
+      logger.error(error);
     }
   });
   
@@ -154,7 +172,7 @@ slackApp.action('Create SoW', async ({ ack, body, say }) => { // fixed action_id
     // Say something in response
     await say("Cool, Let's create a new statement of work (SoW)");
   }catch (error) {
-      console.error(error);
+      logger.error(error);
     }
     say({
           text: `Who are we doing this for?`,
@@ -178,7 +196,7 @@ slackApp.action('Drink', async ({ ack, say }) => { // fixed action_id
     // Say something in response
     await say('Enjoy your beer!');
   } catch (error) {
-    console.error(error);
+    logger.error(error);
   }
 });
 
@@ -190,7 +208,7 @@ slackApp.action('Chase Approval', async ({ ack, say }) => { // fixed action_id
     // Say something in response
     await say("Let's get that document approved!");
   } catch (error) {
-    console.error(error);
+    logger.error(error);
   }
 });
 
