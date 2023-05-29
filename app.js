@@ -161,33 +161,33 @@ slackApp.message('hi', async ({ message, say, client }) => {
   const { body: buttonResponse } =buttonMessage; // Store the response of the button message
   const buttonMessageId = buttonResponse.message.ts; // Get the message ID of the button message
     
-  // Action listener for button clicks
-  slackApp.action('button_clicked', async ({ ack, body, respond }) => {
+  slackApp.action(async ({ ack, body, respond }) => {
     await ack(); // Acknowledge the action
-
-    // Get the clicked button value
-    const clickedButtonValue = body.actions[0].value;
-
-    let customMessage = '';
-
-    // Determine the custom message based on the clicked button
-    switch (clickedButtonValue) {
-      case 'approve':
-        customMessage = "You clicked 'Approve'";
-        break;
-      case 'create_sow':
-        customMessage = "You clicked 'Create SoW'";
-        break;
-      case 'drink_beer':
-        customMessage = "You clicked 'Drink a Beer'";
-        break;
+  
+    // Iterate over each action in the body.actions array
+    for (const action of body.actions) {
+      const clickedButtonValue = action.value; // Get the clicked button value
+      let customMessage = '';
+  
+      // Determine the custom message based on the clicked button
+      switch (action.action_id) {
+        case 'Approve':
+          customMessage = "You clicked 'Approve'";
+          break;
+        case 'Create SoW':
+          customMessage = "You clicked 'Create SoW'";
+          break;
+        case 'Drink':
+          customMessage = "You clicked 'Drink a Beer'";
+          break;
+      }
+  
+      // Update the button message with the custom message
+      await respond({
+        text: customMessage,
+        replace_original: true,
+      });
     }
-
-    // Update the button message with the custom message
-    await respond({
-      text: customMessage,
-      replace_original: true,
-    });
   });
   
     // Delete original messages after a certain duration
