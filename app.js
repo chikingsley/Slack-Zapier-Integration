@@ -152,40 +152,43 @@ slackApp.message('hi', async ({ message, say, client }) => {
     ],
   };
 
-  const { body: greetingResponse } = await say(greetingMessage); // Store the response of the greeting message
+  say(greetingMessage);
+  say(buttonMessage);
+
+  const { body: greetingResponse } = greetingMessage; // Store the response of the greeting message
   const greetingMessageId = greetingResponse.message.ts; // Get the message ID of the greeting message
 
-  const { body: buttonResponse } = await say(buttonMessage); // Store the response of the button message
+  const { body: buttonResponse } =buttonMessage; // Store the response of the button message
   const buttonMessageId = buttonResponse.message.ts; // Get the message ID of the button message
-    // Action listener for button clicks
-    slackApp.action(['Approve', 'Create SoW', 'Drink'], async ({ ack, body, client }) => {
-      await ack(); // Acknowledge the action
-  
-      // Get the clicked button value
-      const clickedButtonValue = body.actions[0].value;
-  
-      // Update the button message with the text of the clicked button
-      const updatedButtonMessage = {
-        ...buttonMessage,
-        blocks: [
-          buttonMessage.blocks[0], // Preserve the first two blocks
-          {
-            type: 'section',
-            text: {
-              type: 'mrkdwn',
-              text: `You clicked "${clickedButtonValue}"`,
-            },
-          },
-        ],
-      };
-  
-      // Update the button message with the text of the clicked button
-      await client.chat.update({
-        channel: message.channel,
-        ts: buttonMessageId,
-        blocks: updatedButtonMessage.blocks,
-      });
+    
+  // Action listener for button clicks
+  slackApp.action('button_clicked', async ({ ack, body, respond }) => {
+    await ack(); // Acknowledge the action
+
+    // Get the clicked button value
+    const clickedButtonValue = body.actions[0].value;
+
+    let customMessage = '';
+
+    // Determine the custom message based on the clicked button
+    switch (clickedButtonValue) {
+      case 'approve':
+        customMessage = "You clicked 'Approve'";
+        break;
+      case 'create_sow':
+        customMessage = "You clicked 'Create SoW'";
+        break;
+      case 'drink_beer':
+        customMessage = "You clicked 'Drink a Beer'";
+        break;
+    }
+
+    // Update the button message with the custom message
+    await respond({
+      text: customMessage,
+      replace_original: true,
     });
+  });
   
     // Delete original messages after a certain duration
     setTimeout(async () => {
