@@ -206,6 +206,37 @@ slackApp.message('hi', async ({ message, say, client }) => {
     }, 5000);
   });
 
+// Command listener for "/delete"
+slackApp.command('/delete', async ({ command, client }) => {
+  try {
+    const channelId = command.channel_id;
+
+    // Retrieve chat history
+    const result = await client.conversations.history({
+      channel: channelId,
+    });
+
+    const messages = result.messages;
+
+    // Delete each message
+    for (const message of messages) {
+      await client.chat.delete({
+        channel: channelId,
+        ts: message.ts,
+      });
+    }
+
+    // Respond to the command with a success message
+    await client.chat.postMessage({
+      channel: channelId,
+      text: 'Chat history deleted.',
+    });
+  } catch (error) {
+    // Handle errors
+    console.error('Error deleting chat history:', error);
+  }
+});
+
 // Start your app
 (async () => {
   await slackApp.start(process.env.PORT || 3000);
