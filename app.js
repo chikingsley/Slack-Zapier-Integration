@@ -38,7 +38,7 @@ slackApp.event('app_home_opened', async ({ event, client }) => {
           type: 'section',
           text: {
             type: 'mrkdwn',
-            text: "This button won't do much for now but you can set up a listener for it using the `actions()` method and passing its unique `action_id`. See an example in the `examples` folder within your Bolt app.",
+            text: "Click the button below to open the modal.",
           },
         },
         {
@@ -48,13 +48,41 @@ slackApp.event('app_home_opened', async ({ event, client }) => {
               type: 'button',
               text: {
                 type: 'plain_text',
-                text: 'Click me!',
+                text: 'Open Modal',
               },
-              action_id: 'click_me',
+              action_id: 'open_modal_button',
             },
           ],
         },
       ],
+    },
+  });
+});
+slackApp.action('open_modal_button', async ({ ack, body, client, respond }) => {
+  await ack();
+
+  await client.views.open({
+    trigger_id: body.trigger_id,
+    view: {
+      type: 'modal',
+      callback_id: 'modal_view',
+      title: {
+        type: 'plain_text',
+        text: 'Sample Modal',
+      },
+      blocks: [
+        {
+          type: 'section',
+          text: {
+            type: 'mrkdwn',
+            text: 'You clicked the button!',
+          },
+        },
+      ],
+      close: {
+        type: 'plain_text',
+        text: 'Close',
+      },
     },
   });
 });
