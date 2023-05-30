@@ -168,7 +168,6 @@ slackApp.action('Create SoW', async ({ ack, body, client, respond }) => {
   });
   // Open the modal
   try {
-    await ack();
     await client.views.open({
       trigger_id: body.trigger_id,
       view: {
