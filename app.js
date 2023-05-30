@@ -218,10 +218,10 @@ slackApp.action('Create SoW', async ({ ack, body, client, respond }) => {
 
   // Save user_input somewhere
   // Send it to a Zapier webhook
-  axios.post('https://hooks.zapier.com/hooks/catch/15387298/3tmuyca', {
-    user_input: user_input
-  });
-});
+//   axios.post('https://hooks.zapier.com/hooks/catch/15387298/3tmuyca', {
+//     user_input: user_input
+//   });
+// });
 
 (async () => {
   await slackApp.start(process.env.PORT || 3000);
