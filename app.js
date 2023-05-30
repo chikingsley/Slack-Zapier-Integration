@@ -127,31 +127,31 @@ slackApp.message('hi', async ({ message, say, client }) => {
 slackApp.action('Create SoW', async ({ ack, body, client, respond }) => {
   await ack();
   // Disable the button and replace it with a message
-  await respond({
-    text: "Processing...",
-    blocks: [
-      {
-        type: 'section',
-        text: {
-          type: 'mrkdwn',
-          text: "Processing..."
-        }
-      }
-    ]
-  });
-  // Ask the user to make a Statement of Work (SoW)
-  await respond({
-    text: "Okay - let's make a Statement of Work (SoW)!!",
-    blocks: [
-      {
-        type: 'section',
-        text: {
-          type: 'mrkdwn',
-          text: "Okay - let's make a Statement of Work (SoW)!!",
-        }
-      }
-    ]
-  });
+  // await respond({
+  //   text: "Processing...",
+  //   blocks: [
+  //     {
+  //       type: 'section',
+  //       text: {
+  //         type: 'mrkdwn',
+  //         text: "Processing..."
+  //       }
+  //     }
+  //   ]
+  // });
+  // // Ask the user to make a Statement of Work (SoW)
+  // await respond({
+  //   text: "Okay - let's make a Statement of Work (SoW)!!",
+  //   blocks: [
+  //     {
+  //       type: 'section',
+  //       text: {
+  //         type: 'mrkdwn',
+  //         text: "Okay - let's make a Statement of Work (SoW)!!",
+  //       }
+  //     }
+  //   ]
+  // });
   // Ask the user for the company name or POC using blocks
   await respond({
     text: "Who are we doing this project for? Respond with a company name or the name of the point of contact (POC).",
