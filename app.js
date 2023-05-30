@@ -88,20 +88,6 @@ slackApp.message('hi', async ({ message, say, client }) => {
   const user = await getUserInfo(client, message.user);
   const fullName = user && user.profile.real_name;
   
-  // Object used to create a message that greets the user with their full name
-  const greetingMessage = {
-    text: `Hello, ${fullName}!`,
-    blocks: [
-      {
-        type: 'section',
-        text: {
-          type: 'mrkdwn',
-          text: `Hello, ${fullName}!`,
-        },
-      },
-    ],
-  };
-
   const buttonMessage = {
     blocks: [
       {
@@ -125,27 +111,10 @@ slackApp.message('hi', async ({ message, say, client }) => {
             type: 'button',
             text: {
               type: 'plain_text',
-              text: 'Approve',
-            },
-            value: "click_me_123",
-            action_id: 'Chase Approval'
-          },
-          {
-            type: 'button',
-            text: {
-              type: 'plain_text',
               text: 'Create SoW',
             },
             value: "click_me456",
             action_id: 'Create SoW'
-          },
-          {
-            type: 'button',
-            text: {
-              type: 'plain_text',
-              text: 'Drink a Beer',
-            },
-            action_id: 'Drink',
           },
         ],
       },
@@ -158,35 +127,53 @@ slackApp.message('hi', async ({ message, say, client }) => {
   const { body: greetingResponse } = greetingMessage; // Store the response of the greeting message
   const greetingMessageId = greetingResponse.message.ts; // Get the message ID of the greeting message
 
-  const { body: buttonResponse } =buttonMessage; // Store the response of the button message
+  const { body: buttonResponse } = buttonMessage; // Store the response of the button message
   const buttonMessageId = buttonResponse.message.ts; // Get the message ID of the button message
     
-  slackApp.action(async ({ ack, body, respond }) => {
-    await ack(); // Acknowledge the action
-  
-    // Iterate over each action in the body.actions array
-    for (const action of body.actions) {
-      const clickedButtonValue = action.value; // Get the clicked button value
-      let customMessage = '';
-  
-      // Determine the custom message based on the clicked button
-      switch (action.action_id) {
-        case 'Approve':
-          customMessage = "You clicked 'Approve'";
-          break;
-        case 'Create SoW':
-          customMessage = "You clicked 'Create SoW'";
-          break;
-        case 'Drink':
-          customMessage = "You clicked 'Drink a Beer'";
-          break;
-      }
-  
-      // Update the button message with the custom message
-      await respond({
-        text: customMessage,
-        replace_original: true,
+  slackApp.action('Create SoW', async ({ ack, body, respond, say }) => {
+    try {
+      await ack(); // Acknowledge the action
+
+      // Prompt the user for the company name
+      await say({
+        text: "Please provide the name of the company we're doing this project for:",
+        blocks: [
+          {
+            type: 'section',
+            text: {
+              type: 'mrkdwn',
+              text: 'Please provide the name of the company we\'re doing this project for:',
+            },
+            accessory: {
+              type: 'plain_text_input',
+              action_id: 'company_name_input',
+              placeholder: {
+                type: 'plain_text',
+                text: 'Company name',
+              },
+            },
+          },
+        ],
       });
+    } catch (error) {
+      logger.error(`Error in 'Create SoW' action: ${error.message} Stack: ${error.stack}`);
+    }
+  });
+
+  // Listen for user's response to the company name prompt
+  slackApp.action('company_name_input', async ({ ack, body, respond, say }) => {
+    try {
+      await ack(); // Acknowledge the action
+
+      const companyName = body.actions[0].value; // Get the company name entered by the user
+
+      // Send the initial message to indicate checking the database
+      await say("Checking the database for:");
+
+      // Send the second message with the company name
+      await say(`- ${companyName}`);
+    } catch (error) {
+      logger.error(`Error in 'company_name_input' action: ${error.message} Stack: ${error.stack}`);
     }
   });
   
