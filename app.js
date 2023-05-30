@@ -210,8 +210,6 @@ slackApp.action('Create_SoW', async ({ ack, body, client, respond, say }) => {
       },
     ],
   });
-
-  console.log('Attempting to open modal with trigger_id', body.trigger_id);
   // Open the modal
   await client.views.open({
     trigger_id: body.trigger_id,
@@ -243,17 +241,14 @@ slackApp.action('Create_SoW', async ({ ack, body, client, respond, say }) => {
           },
         },
       ],
-      private_metadata: JSON.stringify({ userId: body.user.id, channelId: body.channel.id }),
     },
   });
-
-  console.log('Successfully opened modal with trigger_id', body.trigger_id);
+  await say({ sow_modal });
 });
 
 slackApp.view('sow_modal', async ({ ack, body, view, client }) => {
   await ack();
   const user_input = view.state.values.company_name_block.company_name_input.value;
-  const { userId, channelId } = JSON.parse(view.private_metadata);
   await client.chat.postMessage({
     channel: channelId,
     text: `The submitted value is: ${user_input}`,
