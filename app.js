@@ -209,6 +209,7 @@ slackApp.action('Create_SoW', async ({ ack, body, client, respond }) => {
     trigger_id: body.trigger_id,
     view: {
       type: 'modal',
+      callback_id: 'sow_modal',
       title: {
         type: 'plain_text',
         text: 'Create a SoW',
@@ -248,9 +249,10 @@ slackApp.view('sow_modal', async ({ ack, body, view, client }) => {
     channel: channelId,
     text: `The submitted value is: ${user_input}`,
   });
-  axios.post('https://hooks.zapier.com/hooks/catch/15387298/3tmuyca', {
+  axios.post('https://eowdv9m1ufg1knl.m.pipedream.net', {
     user_input: user_input
   });
+  console.log('Data has been stored and sent');
 });
 
 (async () => {
