@@ -167,60 +167,54 @@ slackApp.action('Create SoW', async ({ ack, body, client, respond }) => {
     ]
   });
   // Open the modal
-  try {
-    await client.views.open({
-      trigger_id: body.trigger_id,
-      view: {
-        type: 'modal',
-        callback_id: 'sow_modal',
-        title: {
-          type: 'plain_text',
-          text: 'Create a Statement of Work',
-        },
-        blocks: [
-          {
-            block_id: 'company_name_block',
-            type: 'input',
-            label: {
-              type: 'plain_text',
-              text: 'Company name',
-            },
-            element: {
-              action_id: 'company_name_input',
-              type: 'plain_text_input',
-            },
-          },
-        ],
-        submit: {
-          type: 'plain_text',
-          text: 'Submit',
-        },
-        //private_metadata: JSON.stringify({ userId: body.user.id, channelId: body.channel.id }),
+ await client.views.open({
+    "trigger_id": body.trigger_id,
+    view: {
+      type: 'modal',
+      callback_id: 'sow_modal',
+      title: {
+        type: 'plain_text',
+        text: 'Create a Statement of Work',
       },
-    });
-  } catch (error) {
-    console.error(`Error in 'Create SoW' action: ${error.message} Stack: ${error.stack}`);
-  }
+      blocks: [
+        {
+          block_id: 'company_name_block',
+          type: 'input',
+          label: {
+            type: 'plain_text',
+            text: 'Company name',
+          },
+          element: {
+            type: 'plain_text_input',
+            action_id: 'company_name_input',
+          },
+        },
+      ],
+      submit: {
+        type: 'plain_text',
+        text: 'Submit',
+      },
+      private_metadata: JSON.stringify({ userId: body.user.id, channelId: body.channel.id }),
+    },
+  });
+  
 });
 
 
-// slackApp.view('sow_modal', async ({ ack, body, view, client }) => {
-//   await ack();
+slackApp.view('sow_modal', async ({ ack, body, view, client }) => {
+  await ack();
 
-//   const user_input = view.state.values.company_name_block.company_name_input.value;
-//   const { userId, channelId } = JSON.parse(view.private_metadata);
+  const user_input = view.state.values.company_name_block.company_name_input.value;
+  const { userId, channelId } = JSON.parse(view.private_metadata);
 
-//   await client.chat.postMessage({
-//     channel: channelId,
-//     text: `The submitted value is: ${user_input}`,
-//   });
-
-  // Save user_input somewhere
-  // Send it to a Zapier webhook
-//   axios.post('https://hooks.zapier.com/hooks/catch/15387298/3tmuyca', {
-//     user_input: user_input
-//   });
-// });
+  await client.chat.postMessage({
+    channel: channelId,
+    text: `The submitted value is: ${user_input}`,
+  });
+  axios.post('https://hooks.zapier.com/hooks/catch/15387298/3tmuyca', {
+    user_input: user_input
+  });
+});
 
 (async () => {
   await slackApp.start(process.env.PORT || 3000);
