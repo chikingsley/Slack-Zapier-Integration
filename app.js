@@ -87,6 +87,20 @@ async function getUserInfo(client, userId) {
 slackApp.message('hi', async ({ message, say, client }) => {
   const user = await getUserInfo(client, message.user);
   const fullName = user && user.profile.real_name;
+    
+  // Object used to create a message that greets the user with their full name
+  const greetingMessage = {
+    text: `Hello, ${fullName}!`,
+    blocks: [
+      {
+        type: 'section',
+        text: {
+          type: 'mrkdwn',
+          text: `Hello, ${fullName}!`,
+        },
+      },
+    ],
+  };
   
   const buttonMessage = {
     blocks: [
