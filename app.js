@@ -8,6 +8,15 @@ const slackApp = new App({
   logLevel: LogLevel.DEBUG,
 });
 
+slackApp.command('/delete', async ({ command, ack, client }) => {
+  await ack();
+
+  const result = await client.chat.delete({
+    channel: command.channel_id,
+    ts: command.ts,
+  });
+});
+
 slackApp.event('app_home_opened', async ({ event, client }) => {
   await client.views.publish({
     user_id: event.user,
@@ -211,15 +220,6 @@ slackApp.view('sow_modal', async ({ ack, body, view, client }) => {
   // Send it to a Zapier webhook
   axios.post('https://hooks.zapier.com/hooks/catch/15387298/3tmuyca', {
     user_input: user_input
-  });
-});
-
-slackApp.command('/delete', async ({ command, ack, client }) => {
-  await ack();
-
-  const result = await client.chat.delete({
-    channel: command.channel_id,
-    ts: command.ts,
   });
 });
 
