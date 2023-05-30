@@ -118,40 +118,75 @@ slackApp.message('hi', async ({ message, say, client }) => {
   say(buttonMessage);
 });
 
-slackApp.action('Create SoW', async ({ ack, body, client }) => {
+slackApp.action('Create SoW', async ({ ack, body, client, respond }) => {
   await ack();
 
-  await client.views.open({
-    trigger_id: body.trigger_id,
-    view: {
-      type: 'modal',
-      callback_id: 'sow_modal',
-      private_metadata: JSON.stringify({ userId: body.user.id, channelId: body.channel.id }),
-      title: {
-        type: 'plain_text',
-        text: 'Create a Statement of Work',
-      },
-      blocks: [
-        {
-          block_id: 'company_name_block',
-          type: 'input',
-          label: {
-            type: 'plain_text',
-            text: 'Company name',
-          },
-          element: {
-            action_id: 'company_name_input',
-            type: 'plain_text_input',
-          },
-        },
-      ],
-      submit: {
-        type: 'plain_text',
-        text: 'Submit',
-      },
-    },
+  // Disable the button and replace it with a message
+  await respond({
+    replace_original: true,
+    text: "Processing...",
+    blocks: [
+      {
+        type: 'section',
+        text: {
+          type: 'mrkdwn',
+          text: "Processing..."
+        }
+      }
+    ]
   });
+
+  // Ask the user for the company name or POC using blocks
+  await respond({
+    text: "Who are we doing this project for? Respond with a company name or the name of the point of contact (POC).",
+    blocks: [
+      {
+        type: 'section',
+        text: {
+          type: 'mrkdwn',
+          text: "Who are we doing this project for? Respond with a company name or the name of the point of contact (POC).",
+        }
+      }
+    ]
+  });
+
+  // Open the modal
+  try {
+    await client.views.open({
+      trigger_id: body.trigger_id,
+      view: {
+        type: 'modal',
+        callback_id: 'sow_modal',
+        title: {
+          type: 'plain_text',
+          text: 'Create a Statement of Work',
+        },
+        blocks: [
+          {
+            block_id: 'company_name_block',
+            type: 'input',
+            label: {
+              type: 'plain_text',
+              text: 'Company name',
+            },
+            element: {
+              action_id: 'company_name_input',
+              type: 'plain_text_input',
+            },
+          },
+        ],
+        submit: {
+          type: 'plain_text',
+          text: 'Submit',
+        },
+        private_metadata: JSON.stringify({ userId: body.user.id, channelId: body.channel.id }),
+      },
+    });
+  } catch (error) {
+    console.error(`Error in 'Create SoW' action: ${error.message} Stack: ${error.stack}`);
+  }
 });
+
 
 slackApp.view('sow_modal', async ({ ack, body, view, client }) => {
   await ack();
