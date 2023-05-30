@@ -211,11 +211,11 @@ slackApp.action('Create_SoW', async ({ ack, body, client, respond }) => {
           block_id: 'company_name_block',
           type: 'input',
           label: {
-            type: 'plain_text',
+            type: 'mrkdwn',
             text: 'Company name',
           },
           element: {
-            type: 'plain_text_input',
+            type: 'mrkdwn',
             action_id: 'company_name_input',
           },
         },
