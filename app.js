@@ -118,58 +118,96 @@ slackApp.message('hi', async ({ message, say, client }) => {
   say(buttonMessage);
 });
 
-slackApp.action('Create SoW', async ({ ack, body, respond, logger }) => {
+slackApp.action('Create SoW', async ({ ack, body, client, respond }) => {
+  await ack();
+
+  // Disable the button and replace it with a message
+  await respond({
+    replace_original: true,
+    text: "Processing...",
+    blocks: [
+      {
+        type: 'section',
+        text: {
+          type: 'mrkdwn',
+          text: "Processing..."
+        }
+      }
+    ]
+  });
+
+  // Ask the user for the company name or POC using blocks
+  await respond({
+    text: "Who are we doing this project for? Respond with a company name or the name of the point of contact (POC).",
+    blocks: [
+      {
+        type: 'section',
+        text: {
+          type: 'mrkdwn',
+          text: "Who are we doing this project for? Respond with a company name or the name of the point of contact (POC).",
+        }
+      }
+    ]
+  });
+
+  // Open the modal
   try {
-    await ack();
-    await respond({
-      text: "Please provide the name of the company we're doing this project for:",
-      blocks: [
-        {
-          type: 'section',
-          text: {
-            type: 'mrkdwn',
-            text: 'Please provide the name of the company we\'re doing this project for:',
-          },
-          accessory: {
-            type: 'plain_text_input',
-            action_id: 'company_name_input',
-            placeholder: {
-              type: 'plain_text',
-              text: 'Company name',
-            },
-          },
+    await client.views.open({
+      trigger_id: body.trigger_id,
+      view: {
+        type: 'modal',
+        callback_id: 'sow_modal',
+        title: {
+          type: 'plain_text',
+          text: 'Create SoW'
         },
-      ],
+        blocks: [
+          {
+            type: 'input',
+            block_id: 'company_name_block',
+            label: {
+              type: 'plain_text',
+              text: 'Company Name or POC',
+            },
+            element: {
+              type: 'plain_text_input',
+              action_id: 'company_name_input'
+            }
+          }
+        ],
+        submit: {
+          type: 'plain_text',
+          text: 'Submit'
+        }
+      }
     });
   } catch (error) {
-    logger.error(`Error in 'Create SoW' action: ${error.message} Stack: ${error.stack}`);
+    console.error(`Error in 'Create SoW' action: ${error.message} Stack: ${error.stack}`);
   }
 });
 
-slackApp.action('company_name_input', async ({ ack, body, respond, logger }) => {
-  try {
-    await ack();
-    const companyName = body.actions[0].value;
-    await respond("Checking the database for:");
-    await respond(`- ${companyName}`);
-  } catch (error) {
-    logger.error(`Error in 'company_name_input' action: ${error.message} Stack: ${error.stack}`);
-  }
-});
+slackApp.command('/delete', async ({ command, ack, client }) => {
+  ack(); // Acknowledge the command immediately
 
-slackApp.command('/delete', async ({ command, client }) => {
   try {
     const channelId = command.channel_id;
     const result = await client.conversations.history({
       channel: channelId,
     });
     const messages = result.messages;
-    for (const message of messages) {
-      await client.chat.delete({
-        channel: channelId,
-        ts: message.ts,
-      });
-    }
+
+    // Delete each message asynchronously
+    messages.forEach(async (message) => {
+      try {
+        await client.chat.delete({
+          channel: channelId,
+          ts: message.ts,
+        });
+      } catch (error) {
+        console.error(`Error deleting message: ${error}`);
+      }
+    });
+
     await client.chat.postMessage({
       channel: channelId,
       text: 'Chat history deleted.',
