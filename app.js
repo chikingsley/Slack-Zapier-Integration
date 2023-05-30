@@ -146,7 +146,7 @@ slackApp.message('hi', async ({ message, say, client }) => {
               type: 'plain_text',
               text: 'Create SoW',
             },
-            action_id: 'Create SoW',
+            action_id: 'Create_SoW',
           },
         ],
       },
@@ -154,8 +154,7 @@ slackApp.message('hi', async ({ message, say, client }) => {
   });
 });
 
-
-slackApp.action('Create SoW', async ({ ack, body, client, respond }) => {
+slackApp.action('Create_SoW', async ({ ack, body, client, respond }) => {
   await ack();
   // Disable the button and replace it with a message
   await respond({
@@ -199,7 +198,7 @@ slackApp.action('Create SoW', async ({ ack, body, client, respond }) => {
   });
   // Open the modal
  await client.views.open({
-    "trigger_id": body.trigger_id,
+    trigger_id: body.trigger_id,
     view: {
       type: 'modal',
       callback_id: 'sow_modal',
