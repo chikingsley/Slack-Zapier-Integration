@@ -9,12 +9,16 @@ const slackApp = new App({
 });
 
 slackApp.command('/delete', async ({ command, ack, client }) => {
-  await ack();
-
-  const result = await client.chat.delete({
-    channel: command.channel_id,
-    ts: command.ts,
-  });
+  try {
+    await ack();
+    const deleteResult = await client.chat.delete({
+      channel: command.channel_id,
+      ts: command.ts,
+    });
+    console.log('Message deleted:', deleteResult);
+  } catch (error) {
+    console.error('Error deleting message:', error);
+  }
 });
 
 slackApp.event('app_home_opened', async ({ event, client }) => {
@@ -58,9 +62,9 @@ slackApp.event('app_home_opened', async ({ event, client }) => {
     },
   });
 });
+
 slackApp.action('open_modal_button', async ({ ack, body, client, respond }) => {
   await ack();
-
   await client.views.open({
     trigger_id: body.trigger_id,
     view: {
@@ -116,19 +120,20 @@ slackApp.message('hi', async ({ message, say, client }) => {
   const user = await getUserInfo(client, message.user);
   const fullName = user && user.profile.real_name;
   const greetingMessage = `Hello, ${fullName}!`;
-  const buttonMessage = {
+  await say(greetingMessage);
+  await say({
     blocks: [
       {
         type: 'section',
         text: {
-          type: 'plain_text',
+          type: 'mrkdwn',
           text: "It's good to see you 😇. What do you want to do today?",
         },
       },
       {
         type: 'section',
         text: {
-          type: 'plain_text',
+          type: 'mrkdwn',
           text: 'Pick one⬇️',
         },
       },
@@ -141,45 +146,44 @@ slackApp.message('hi', async ({ message, say, client }) => {
               type: 'plain_text',
               text: 'Create SoW',
             },
-            value: "click_me456",
-            action_id: 'Create SoW'
+            action_id: 'Create SoW',
           },
         ],
       },
     ],
-  };
-  await say(greetingMessage);
-  say(buttonMessage);
+  });
 });
+
 
 slackApp.action('Create SoW', async ({ ack, body, client, respond }) => {
   await ack();
   // Disable the button and replace it with a message
-  // await respond({
-  //   text: "Processing...",
-  //   blocks: [
-  //     {
-  //       type: 'section',
-  //       text: {
-  //         type: 'mrkdwn',
-  //         text: "Processing..."
-  //       }
-  //     }
-  //   ]
-  // });
-  // // Ask the user to make a Statement of Work (SoW)
-  // await respond({
-  //   text: "Okay - let's make a Statement of Work (SoW)!!",
-  //   blocks: [
-  //     {
-  //       type: 'section',
-  //       text: {
-  //         type: 'mrkdwn',
-  //         text: "Okay - let's make a Statement of Work (SoW)!!",
-  //       }
-  //     }
-  //   ]
-  // });
+  await respond({
+    replace_original: true,
+    text: "Processing...",
+    blocks: [
+      {
+        type: 'section',
+        text: {
+          type: 'mrkdwn',
+          text: "Processing..."
+        }
+      }
+    ]
+  });
+  // Ask the user to make a Statement of Work (SoW)
+  await respond({
+    text: "Okay - let's make a Statement of Work (SoW)!!",
+    blocks: [
+      {
+        type: 'section',
+        text: {
+          type: 'mrkdwn',
+          text: "Okay - let's make a Statement of Work (SoW)!!",
+        }
+      }
+    ]
+  });
   // Ask the user for the company name or POC using blocks
   await respond({
     text: "Who are we doing this project for? Respond with a company name or the name of the point of contact (POC).",
