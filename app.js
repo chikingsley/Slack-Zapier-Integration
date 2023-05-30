@@ -82,6 +82,18 @@ slackApp.action('open_modal_button', async ({ ack, body, client, respond }) => {
             text: 'You clicked the button!',
           },
         },
+        {
+          type: 'input',
+          block_id: 'input_block',
+          label: {
+            type: 'plain_text',
+            text: 'Your input'
+          },
+          element: {
+            type: 'plain_text_input',
+            action_id: 'company_name_input',
+          },
+        }
       ],
       close: {
         type: 'plain_text',
@@ -90,6 +102,7 @@ slackApp.action('open_modal_button', async ({ ack, body, client, respond }) => {
     },
   });
 });
+
 
 async function getUserInfo(client, userId) {
   let retries = 0;
@@ -157,45 +170,46 @@ slackApp.message('hi', async ({ message, say, client }) => {
 slackApp.action('Create_SoW', async ({ ack, body, client, respond }) => {
   await ack();
   // Disable the button and replace it with a message
-  // await respond({
-  //   replace_original: true,
-  //   text: "Processing...",
-  //   blocks: [
-  //     {
-  //       type: 'section',
-  //       text: {
-  //         type: 'mrkdwn',
-  //         text: "Processing..."
-  //       }
-  //     }
-  //   ]
-  // });
-  // // Ask the user to make a Statement of Work (SoW)
-  // await respond({
-  //   text: "Okay - let's make a Statement of Work (SoW)!!",
-  //   blocks: [
-  //     {
-  //       type: 'section',
-  //       text: {
-  //         type: 'mrkdwn',
-  //         text: "Okay - let's make a Statement of Work (SoW)!!",
-  //       }
-  //     }
-  //   ]
-  // });
-  // // Ask the user for the company name or POC using blocks
-  // await respond({
-  //   text: "Who are we doing this project for? Respond with a company name or the name of the point of contact (POC).",
-  //   blocks: [
-  //     {
-  //       type: 'section',
-  //       text: {
-  //         type: 'mrkdwn',
-  //         text: "Who are we doing this project for? Respond with a company name or the name of the point of contact (POC).",
-  //       }
-  //     }
-  //   ]
-  // });
+  await respond({
+    replace_original: true,
+    text: "Processing...",
+    blocks: [
+      {
+        type: 'section',
+        text: {
+          type: 'mrkdwn',
+          text: "Processing..."
+        }
+      }
+    ]
+  });
+  // Ask the user to make a Statement of Work (SoW)
+  await respond({
+    text: "Okay - let's make a Statement of Work (SoW)!!",
+    blocks: [
+      {
+        type: 'section',
+        text: {
+          type: 'mrkdwn',
+          text: "Okay - let's make a Statement of Work (SoW)!!",
+        }
+      }
+    ]
+  });
+  // Ask the user for the company name or POC using blocks
+  await respond({
+    text: "Who are we doing this project for? Respond with a company name or the name of the point of contact (POC).",
+    blocks: [
+      {
+        type: 'section',
+        text: {
+          type: 'mrkdwn',
+          text: "Who are we doing this project for? Respond with a company name or the name of the point of contact (POC).",
+        }
+      }
+    ]
+  });
+  console.log('Attempting to open modal with trigger_id', body.trigger_id);
   // Open the modal
  await client.views.open({
     trigger_id: body.trigger_id,
@@ -215,7 +229,7 @@ slackApp.action('Create_SoW', async ({ ack, body, client, respond }) => {
             text: 'Company name',
           },
           element: {
-            type: 'mrkdwn',
+            type: 'plain_text_input',
             action_id: 'company_name_input',
           },
         },
@@ -227,7 +241,7 @@ slackApp.action('Create_SoW', async ({ ack, body, client, respond }) => {
       private_metadata: JSON.stringify({ userId: body.user.id, channelId: body.channel.id }),
     },
   });
-  
+  console.log('Successfully opened modal with trigger_id', body.trigger_id);
 });
 
 
