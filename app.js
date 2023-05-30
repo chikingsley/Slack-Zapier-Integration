@@ -78,9 +78,7 @@ async function getUserInfo(client, userId) {
 slackApp.message('hi', async ({ message, say, client }) => {
   const user = await getUserInfo(client, message.user);
   const fullName = user && user.profile.real_name;
-    
   const greetingMessage = `Hello, ${fullName}!`;
-
   const buttonMessage = {
     blocks: [
       {
@@ -113,14 +111,12 @@ slackApp.message('hi', async ({ message, say, client }) => {
       },
     ],
   };
-
-  say(greetingMessage);
+  await say(greetingMessage);
   say(buttonMessage);
 });
 
 slackApp.action('Create SoW', async ({ ack, body, client, respond }) => {
   await ack();
-
   // Disable the button and replace it with a message
   await respond({
     replace_original: true,
@@ -135,7 +131,19 @@ slackApp.action('Create SoW', async ({ ack, body, client, respond }) => {
       }
     ]
   });
-
+  // Ask the user to make a Statement of Work (SoW)
+  await respond({
+    text: "Okay - let's make a Statement of Work (SoW)!!",
+    blocks: [
+      {
+        type: 'section',
+        text: {
+          type: 'mrkdwn',
+          text: "Okay - let's make a Statement of Work (SoW)!!",
+        }
+      }
+    ]
+  });
   // Ask the user for the company name or POC using blocks
   await respond({
     text: "Who are we doing this project for? Respond with a company name or the name of the point of contact (POC).",
@@ -149,9 +157,9 @@ slackApp.action('Create SoW', async ({ ack, body, client, respond }) => {
       }
     ]
   });
-
   // Open the modal
   try {
+    await ack();
     await client.views.open({
       trigger_id: body.trigger_id,
       view: {
