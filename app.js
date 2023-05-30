@@ -69,25 +69,24 @@ slackApp.action('open_modal_button', async ({ ack, body, client, respond }) => {
     trigger_id: body.trigger_id,
     view: {
       type: 'modal',
-      callback_id: 'modal_view',
       title: {
         type: 'plain_text',
         text: 'Sample Modal',
       },
+      close: {
+        type: 'plain_text',
+        text: 'Close',
+      },
+      submit: {
+        type: "plain_text",
+        text: "Submit"
+      },
       blocks: [
         {
-          type: 'section',
-          text: {
-            type: 'mrkdwn',
-            text: 'You clicked the button!',
-          },
-        },
-        {
           type: 'input',
-          block_id: 'input_block',
           label: {
             type: 'plain_text',
-            text: 'Your input'
+            text: 'Label'
           },
           element: {
             type: 'plain_text_input',
@@ -95,10 +94,6 @@ slackApp.action('open_modal_button', async ({ ack, body, client, respond }) => {
           },
         }
       ],
-      close: {
-        type: 'plain_text',
-        text: 'Close',
-      },
     },
   });
 });
