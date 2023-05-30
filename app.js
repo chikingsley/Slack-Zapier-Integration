@@ -211,7 +211,7 @@ slackApp.action('Create_SoW', async ({ ack, body, client, respond }) => {
       type: 'modal',
       title: {
         type: 'plain_text',
-        text: 'Create a Statement of Work',
+        text: 'Create a SoW',
       },
       submit: {
         type: 'plain_text',
