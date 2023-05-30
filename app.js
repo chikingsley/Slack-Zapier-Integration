@@ -128,7 +128,6 @@ slackApp.action('Create SoW', async ({ ack, body, client, respond }) => {
   await ack();
   // Disable the button and replace it with a message
   await respond({
-    replace_original: true,
     text: "Processing...",
     blocks: [
       {
