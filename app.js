@@ -98,7 +98,6 @@ slackApp.action('open_modal_button', async ({ ack, body, client, respond }) => {
   });
 });
 
-
 async function getUserInfo(client, userId) {
   let retries = 0;
   const maxRetries = 5;
@@ -210,17 +209,23 @@ slackApp.action('Create_SoW', async ({ ack, body, client, respond }) => {
     trigger_id: body.trigger_id,
     view: {
       type: 'modal',
-      callback_id: 'sow_modal',
       title: {
         type: 'plain_text',
         text: 'Create a Statement of Work',
       },
+      submit: {
+        type: 'plain_text',
+        text: 'Submit',
+      },
+      close: {
+        type: 'plain_text',
+        text: 'Close',
+      },
       blocks: [
         {
-          block_id: 'company_name_block',
           type: 'input',
           label: {
-            type: 'mrkdwn',
+            type: 'plain_text',
             text: 'Company name',
           },
           element: {
@@ -229,23 +234,16 @@ slackApp.action('Create_SoW', async ({ ack, body, client, respond }) => {
           },
         },
       ],
-      submit: {
-        type: 'plain_text',
-        text: 'Submit',
-      },
       private_metadata: JSON.stringify({ userId: body.user.id, channelId: body.channel.id }),
     },
   });
   console.log('Successfully opened modal with trigger_id', body.trigger_id);
 });
 
-
 slackApp.view('sow_modal', async ({ ack, body, view, client }) => {
   await ack();
-
   const user_input = view.state.values.company_name_block.company_name_input.value;
   const { userId, channelId } = JSON.parse(view.private_metadata);
-
   await client.chat.postMessage({
     channel: channelId,
     text: `The submitted value is: ${user_input}`,
