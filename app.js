@@ -191,14 +191,14 @@ slackApp.action('open_modal_button', async ({ ack, body, client }) => {
   }
 })
 
-slackApp.message('hi', async ({ message, client, context, body }) => {
+slackApp.message('hi', async ({ message, client, context }) => {
   const user = await getUserInfo(client, message.user);
   const fullName = user && user.profile.real_name;
+  const channelid = message.channel;
   try {
     const result = await slackApp.client.chat.postMessage({
       token: context.botToken,
-      // Channel of message
-      channel: context.channel_id,
+      channel: channelid,
       text: `Hello, ${fullName}!\n It's good to see you 😇. What do you want to do today?\n Pick one⬇️`,
       //respond hello with user's full name - ask what they want to do -> pick one
       blocks: [
