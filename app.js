@@ -13,7 +13,7 @@ slackApp.command('/helloworld', async ({ ack, payload, context }) => {
   ack();
 
   try { 
-    const result = await application.client.chat.postMessage({
+    const result = await slackApp.client.chat.postMessage({
       token: context.botToken,
       //channel to send message to
       channel: payload.channel_id,
@@ -53,7 +53,7 @@ slackApp.action('button_abc', async ({ ack, body, context }) => {
 
   try {
     // Update the message
-    const result = await app.client.chat.update({
+    const result = await slackApp.client.chat.update({
       token: context.botToken,
       // ts of message to update
       ts: body.message.ts,
@@ -196,7 +196,7 @@ async function getUserInfo(client, userId) {
   throw new Error('Maximum retry attempts exceeded');
 }
 
-slackApp.message('hi', async ({ message, say, client }) => {
+slackApp.message('hi', async ({ message, say, client, respond }) => {
   const user = await getUserInfo(client, message.user);
   const fullName = user && user.profile.real_name;
   
@@ -269,7 +269,7 @@ slackApp.action('Create_SoW', async ({ ack, body, client, respond }) => {
           type: 'section',
           text: {
             type: 'mrkdwn',
-            text: `Processing... ${Create_SoW} button click`,
+            text: `Processing... Statement of Work button click`,
           },
         },
       ],
@@ -302,7 +302,7 @@ slackApp.action('Create_SoW', async ({ ack, body, client, respond }) => {
       view: {
         type: 'modal',
         // View identifier - USE IN MODAL CALLBACKS
-        callback_id: 'view_1',
+        callback_id: `view_1`,
         private_metadata: 'my neck, my back...',
         title: {
           type: 'plain_text',
@@ -326,9 +326,11 @@ slackApp.action('Create_SoW', async ({ ack, body, client, respond }) => {
             text: {
               type: 'mrkdwn',
               text: 'Please enter the company name'
-            },
+            }
+          },
+          {
             type: 'input',
-            block_id: 'company_name_block', 
+            block_id: `company_name_block`, 
             // Label/Title above input field 
             label: {
               type: 'plain_text',
@@ -337,7 +339,7 @@ slackApp.action('Create_SoW', async ({ ack, body, client, respond }) => {
             // Actual Input Field
             element: {
               type: 'plain_text_input',
-              action_id: 'company_name_input',
+              action_id: `company_name_input`,
             },
             // Input Field Placeholder text
             element: {
