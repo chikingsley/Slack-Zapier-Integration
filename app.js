@@ -334,7 +334,7 @@ slackApp.view('view_1', async ({ ack, view, body, client, context }) => {
     channel: channelId,
   text: `The submitted value is: ${user_input}`,
   });
-  axios.post('https://eomvdp7ebtg8i5n.m.pipedream.net', {
+  axios.post('https://hooks.zapier.com/hooks/catch/15387298/3t652em/', {
     user_input: user_input
   });
   console.log('Data has been stored and sent');
