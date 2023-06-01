@@ -326,19 +326,16 @@ slackApp.action('Create_SoW', async ({ ack, body, client, context }) => {
 slackApp.view('view_1', async ({ ack, view, body, client, context }) => {
   await ack();
   const user_input = view.state.values.company_name_block.company_name_input;
-  const user = body.user.id;
+  const god = user_input.company_name_input;
   const privateMetadata = JSON.parse(view.private_metadata);  // Parse the private metadata
   const channelId = privateMetadata.channelId;  // Retrieve the channel ID
-  // store values
-  console.log(user_input);
-  console.log(user);
   await client.chat.postMessage({ //sending metadata out
     token: context.botToken,
     channel: channelId,
   text: `The submitted value is: ${user_input}`,
   });
   axios.post('https://eowdv9m1ufg1knl.m.pipedream.net', {
-    user_input: user_input
+    user_input: god
   });
   console.log('Data has been stored and sent');
 });
