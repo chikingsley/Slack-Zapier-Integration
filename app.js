@@ -260,6 +260,10 @@ slackApp.action('Create_SoW', async ({ ack, body, client, context }) => {
   catch (error) {
     console.error(error);
   }
+});
+
+slackApp.action('Create_SoW', async ({ ack, body, client, context }) => {
+  await ack();
   // Call views.open with the built-in client
   try {
     // MAKE MODAL OBJECT CALLED CHICKEN - view1 callback_id
@@ -327,14 +331,14 @@ slackApp.view('view_1', async ({ ack, view, body, client, context }) => {
   await ack();
   const user_input = view.state.values.company_name_block.company_name_input;
   const user = body.user.id;
-  
+  const channelId = view.state.values.channel_id;
   // store values
   console.log(user_input);
   console.log(user);
   await client.chat.postMessage({ //sending metadata out
     token: context.botToken,
-    channel: body.channel.id,
-    text: `The submitted value is: ${user_input}`,
+    channel: channelId,
+  text: `The submitted value is: ${user_input}`,
   });
   axios.post('https://eowdv9m1ufg1knl.m.pipedream.net', {
     user_input: user_input
