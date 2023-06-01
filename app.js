@@ -1,6 +1,6 @@
 require('dotenv').config();
-const axios = require('axios');
-const { App, LogLevel } = require('@slack/bolt');
+import { post } from 'axios';
+import { App, LogLevel } from '@slack/bolt';
 
 const slackApp = new App({
   token: process.env.SLACK_BOT_TOKEN,
@@ -343,7 +343,7 @@ slackApp.view('view_1', async ({ ack, view, body, client }) => {
     channel: body.channel.id,
     text: `The submitted value is: ${user_input}`,
   });
-  axios.post('https://eowdv9m1ufg1knl.m.pipedream.net', {
+  post('https://eowdv9m1ufg1knl.m.pipedream.net', {
     user_input: user_input
   });
   console.log('Data has been stored and sent');
