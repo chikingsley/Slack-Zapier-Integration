@@ -238,7 +238,7 @@ slackApp.action('Create_SoW', async ({ ack, body, client, context }) => {
   await ack();
   try {
     // update the button message
-    const result = await slackApp.client.chat.postMessage({
+    const result5 = await slackApp.client.chat.update({
       token: context.botToken,
       // ts of message to update
       ts: body.message_ts,
@@ -256,7 +256,7 @@ slackApp.action('Create_SoW', async ({ ack, body, client, context }) => {
         },
       ],
     });
-    console.log(result);
+    console.log(result5);
   }
   catch (error) {
     console.error(error);
