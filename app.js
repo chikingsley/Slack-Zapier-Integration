@@ -210,24 +210,22 @@ slackApp.message('hi', async ({ message, say, client }) => {
             type: 'mrkdwn',
             text: `Hello, ${fullName}!\n It's good to see you 😇. What do you want to do today?\n Pick one⬇️`,
           },
-          accessory: {
-            type: 'button',
-            text: {
-              type: 'plain_text',
-              text: 'Create SoW',
+        },
+        // button option encoded in blocks
+        {
+          type: 'actions',
+          elements: [
+            {
+              type: 'button',
+              text: {
+                type: 'plain_text',
+                text: 'Create SoW',
+              },
+              action_id: 'Create_SoW',
             },
-            action_id: 'Create_SoW',
-          },
-          accessory: {
-            type: 'button',
-            text: {
-              type: 'plain_text',
-              text: '444',
-            },
-            action_id: '444',
-          },
-        }
-        ],
+          ],
+        },
+      ],
     });
   }
   catch (error) {
