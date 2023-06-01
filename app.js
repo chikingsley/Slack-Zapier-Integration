@@ -251,6 +251,7 @@ await say({ text: 'The modal has been opened.' });
 slackApp.view('sow_modal', async ({ ack, body, view, client }) => {
   await ack();
   const user_input = view.state.values.company_name_block.company_name_input.value;
+  const channelId = body.channel.id; // Get the channel ID from the body object
   await client.chat.postMessage({
     channel: channelId,
     text: `The submitted value is: ${user_input}`,
