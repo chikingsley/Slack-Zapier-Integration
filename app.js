@@ -157,22 +157,21 @@ slackApp.message('hi', async ({ message, say, client }) => {
       ],
     },
   ];
-  await say({ blocks });
+  await say({ text: 'The modal has been opened.' });
 });
 
 slackApp.action('Create_SoW', async ({ ack, body, client, respond, say }) => {
   await ack();
   // Disable the button and replace it with a message
   await respond({
-    replace_original: true,
-    blocks: [
+    replace_elements: [
       {
-        type: 'section',
-        text: {
-          type: 'mrkdwn',
-          text: "It's good to see you 😇. What do you want to do today?\n Pick one⬇️",
-        },
+        type: 'button',
+        action_id: 'Create_SoW',
       },
+    ],
+    text: "Processing...",
+    blocks: [
       {
         type: 'section',
         text: {
@@ -196,6 +195,7 @@ slackApp.action('Create_SoW', async ({ ack, body, client, respond, say }) => {
       },
     ],
   });
+  
 
   // Ask the user for the company name or POC using blocks
   await respond({
@@ -210,6 +210,7 @@ slackApp.action('Create_SoW', async ({ ack, body, client, respond, say }) => {
       },
     ],
   });
+
   // Open the modal
   await client.views.open({
     trigger_id: body.trigger_id,
