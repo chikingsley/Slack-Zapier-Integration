@@ -191,14 +191,12 @@ slackApp.action('open_modal_button', async ({ ack, body, client }) => {
   }
 })
 
-slackApp.message('hi', async ({ message, payload, client, context }) => {
+slackApp.message('hi', async ({ message, client, context }) => {
   const user = await getUserInfo(client, message.user);
   const fullName = user && user.profile.real_name;
   try {
     const result = await slackApp.client.chat.postMessage({
       token: context.botToken,
-      //channel to send message to
-      channel: payload.channel_id,
       // include a button in the message
       //respond hello with user's full name - ask what they want to do -> pick one
       blocks: [
@@ -233,7 +231,7 @@ slackApp.message('hi', async ({ message, payload, client, context }) => {
 });
 
 //makes modal to ger user input to make sow
-slackApp.action('Create_SoW', async ({ ack, body, client, payload }) => {
+slackApp.action('Create_SoW', async ({ ack, body, client }) => {
   // acknowledge the button request
   await ack();
   try {
