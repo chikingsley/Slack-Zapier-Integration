@@ -341,7 +341,8 @@ slackApp.view('view_1', async ({ ack, view, body, client, context }) => {
   console.log('Data has been stored and sent');
 });
 
-slackApp.message('New Client - Enter Required Information', async ({ ack, body, client }) => {
+slackApp.command('/runprogram', async ({ ack, payload, context }) => {
+  await ack();
   try {
     const result = await client.views.open({
       trigger_id: body.trigger_id,
