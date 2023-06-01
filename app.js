@@ -8,6 +8,31 @@ const slackApp = new App({
   logLevel: LogLevel.DEBUG,
 });
 
+async function getUserInfo(client, userId) {
+  let retries = 0;
+  const maxRetries = 5;
+  while (retries < maxRetries) {
+    try {
+      const response = await client.users.info({ user: userId });
+      if (response.ok) {
+        return response.user;
+      } else {
+        return null;
+      }
+    } catch (error) {
+      if (error.response.headers['retry-after']) {
+        await new Promise((resolve) =>
+          setTimeout(resolve, parseInt(error.response.headers['retry-after']) * 1000)
+        );
+      } else {
+        throw error;
+      }
+    }
+    retries++;
+  }
+  throw new Error('Maximum retry attempts exceeded');
+}
+
 slackApp.command('/helloworld', async ({ ack, payload, context }) => {
   // acknowledge the request
   ack();
@@ -171,31 +196,6 @@ slackApp.action('open_modal_button', async ({ ack, body, client }) => {
   }
 })
 
-async function getUserInfo(client, userId) {
-  let retries = 0;
-  const maxRetries = 5;
-  while (retries < maxRetries) {
-    try {
-      const response = await client.users.info({ user: userId });
-      if (response.ok) {
-        return response.user;
-      } else {
-        return null;
-      }
-    } catch (error) {
-      if (error.response.headers['retry-after']) {
-        await new Promise((resolve) =>
-          setTimeout(resolve, parseInt(error.response.headers['retry-after']) * 1000)
-        );
-      } else {
-        throw error;
-      }
-    }
-    retries++;
-  }
-  throw new Error('Maximum retry attempts exceeded');
-}
-
 slackApp.message('hi', async ({ message, say, client }) => {
   const user = await getUserInfo(client, message.user);
   const fullName = user && user.profile.real_name;
@@ -254,8 +254,6 @@ slackApp.action('Create_SoW', async ({ ack, body, client, say }) => {
       // Channel to send message to
       channel: body.channel.id,
       // Message
-      //replace_original: true,
-      text: "Processing...",
       blocks: [
         {
           type: 'section',
@@ -283,6 +281,7 @@ slackApp.action('Create_SoW', async ({ ack, body, client, say }) => {
         },
       },
     ],
+    text: 'Message from Test App'
   });
   // Call views.open with the built-in client
   try {
