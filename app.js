@@ -196,13 +196,13 @@ async function getUserInfo(client, userId) {
   throw new Error('Maximum retry attempts exceeded');
 }
 
-slackApp.message('hi', async ({ message, say, client, respond }) => {
+slackApp.message('hi', async ({ message, say, client }) => {
   const user = await getUserInfo(client, message.user);
   const fullName = user && user.profile.real_name;
   
   try {
     // respond hello with user's full name - ask what they want to do -> pick one
-    await respond({
+    await say({
       text: `Hello, ${fullName}!\n It's good to see you 😇. What do you want to do today?`,
       blocks: [
         {
@@ -215,7 +215,7 @@ slackApp.message('hi', async ({ message, say, client, respond }) => {
       ],
     });
     // tell user to pick an option
-    await respond({
+    await say({
       text: `Pick one⬇️`,
       blocks: [
         {
@@ -251,7 +251,7 @@ slackApp.message('hi', async ({ message, say, client, respond }) => {
 });
 
 //makes modal to ger user input to make sow
-slackApp.action('Create_SoW', async ({ ack, body, client, respond }) => {
+slackApp.action('Create_SoW', async ({ ack, body, client, say }) => {
   // acknowledge the button request
   await ack();
   try {
@@ -280,7 +280,7 @@ slackApp.action('Create_SoW', async ({ ack, body, client, respond }) => {
     console.error(error);
   }
   // Ask the user to make a Statement of Work (SoW) - let them know to enter company name in dialogue box
-  await respond({
+  await say({
     text: `Okay - let's make a Statement of Work (SoW)!!\n Who are we doing this project for? Respond with a company name or the name of the point of contact (POC).`,
     blocks: [
       {
