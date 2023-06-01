@@ -74,8 +74,7 @@ slackApp.command('/helloworld', async ({ ack, payload, context }) => {
 // You must set up a Request URL under Interactive Components on your app configuration page
 slackApp.action('button_abc', async ({ ack, body, context }) => {
   // Acknowledge the button request
-  ack();
-
+  await ack();
   try {
     // Update the message
     const result = await slackApp.client.chat.update({
@@ -209,31 +208,26 @@ slackApp.message('hi', async ({ message, say, client }) => {
           type: 'section',
           text: {
             type: 'mrkdwn',
-            text: `Hello, ${fullName}!\n It's good to see you 😇. What do you want to do today?`,
+            text: `Hello, ${fullName}!\n It's good to see you 😇. What do you want to do today?\n Pick one⬇️`,
           },
-        },
-        {
-          type: 'section',
-          text: {
-            type: 'mrkdwn',
-            text: `Pick one⬇️`,
-          },
-        },
-        // button option encoded in blocks
-        {
-          type: 'actions',
-          elements: [
-            {
-              type: 'button',
-              text: {
-                type: 'plain_text',
-                text: 'Create SoW',
-              },
-              action_id: 'Create_SoW',
+          accessory: {
+            type: 'button',
+            text: {
+              type: 'plain_text',
+              text: 'Create SoW',
             },
-          ],
-        },
-      ],
+            action_id: 'Create_SoW',
+          },
+          accessory: {
+            type: 'button',
+            text: {
+              type: 'plain_text',
+              text: '444',
+            },
+            action_id: '444',
+          },
+        }
+        ],
     });
   }
   catch (error) {
