@@ -235,7 +235,7 @@ slackApp.message('hi', async ({ message, client, context }) => {
 //makes modal to ger user input to make sow
 slackApp.action('Create_SoW', async ({ ack, body, client, context }) => {
   // acknowledge the button request
-  await ack();
+  ack();
   try {
     // update the button message
     const result = await slackApp.client.chat.update({
