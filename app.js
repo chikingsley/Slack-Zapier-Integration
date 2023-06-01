@@ -341,7 +341,7 @@ slackApp.view('view_1', async ({ ack, view, body, client, context }) => {
   console.log('Data has been stored and sent');
 });
 
-slackApp.message('New Client - Enter Required Information', async ({ body, client, ack }) => {
+slackApp.message('New Client - Enter Required Information', async ({ ack, body, client }) => {
   await ack();
 
   try {
