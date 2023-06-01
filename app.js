@@ -217,6 +217,7 @@ slackApp.action('Create_SoW', async ({ ack, body, client, respond, say }) => {
     view: {
       type: 'modal',
       callback_id: 'sow_modal',
+      block_id: 'company_name_block',
       title: {
         type: 'plain_text',
         text: 'Create a SoW',
