@@ -232,6 +232,7 @@ slackApp.action('Create_SoW', async ({ ack, body, client, respond, say }) => {
       blocks: [
         {
           type: 'input',
+          block_id: 'company_name_block',  // Add this line
           label: {
             type: 'plain_text',
             text: 'Company name',
