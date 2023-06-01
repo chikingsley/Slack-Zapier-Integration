@@ -212,12 +212,6 @@ slackApp.message('hi', async ({ message, say, client }) => {
             text: `Hello, ${fullName}!\n It's good to see you 😇. What do you want to do today?`,
           },
         },
-      ],
-    });
-    // tell user to pick an option
-    await say({
-      text: `Pick one⬇️`,
-      blocks: [
         {
           type: 'section',
           text: {
@@ -225,25 +219,22 @@ slackApp.message('hi', async ({ message, say, client }) => {
             text: `Pick one⬇️`,
           },
         },
+        // button option encoded in blocks
+        {
+          type: 'actions',
+          elements: [
+            {
+              type: 'button',
+              text: {
+                type: 'plain_text',
+                text: 'Create SoW',
+              },
+              action_id: 'Create_SoW',
+            },
+          ],
+        },
       ],
     });
-    // button option encoded in blocks
-    const options = [
-      {
-        type: 'actions',
-        elements: [
-          {
-            type: 'button',
-            text: {
-              type: 'plain_text',
-              text: 'Create SoW',
-            },
-            action_id: 'Create_SoW',
-          },
-        ],
-      },
-    ];
-    await say({ options });
   }
   catch (error) {
     console.error(error);
