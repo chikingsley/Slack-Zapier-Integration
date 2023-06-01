@@ -8,6 +8,75 @@ const slackApp = new App({
   logLevel: LogLevel.DEBUG,
 });
 
+slackApp.command('/helloworld', async ({ ack, payload, context }) => {
+  // acknowledge the request
+  ack();
+
+  try { 
+    const result = await application.client.chat.postMessage({
+      token: context.botToken,
+      //channel to send message to
+      channel: payload.channel_id,
+      // include a button in the message
+      blocks: [
+        {
+          type: 'section',
+          text: {
+            type: 'mrkdwn',
+            text: 'Go ahead. Click it.'
+          },
+          accessory: {
+            type: 'button',
+            text: {
+              type: 'plain_text',
+              text: 'Click me!'
+            },
+            action_id: 'button_abc'
+          }
+       }
+      ],
+      // text in notification
+      text: 'message from test app'
+    });
+    console.log(result);
+  }
+  catch (error) {
+      console.error(error);
+  }
+});
+ 
+// Listen for a button invocation with action_id `button_abc`
+// You must set up a Request URL under Interactive Components on your app configuration page
+app.action('button_abc', async ({ ack, body, context }) => {
+  // Acknowledge the button request
+  ack();
+
+  try {
+    // Update the message
+    const result = await app.client.chat.update({
+      token: context.botToken,
+      // ts of message to update
+      ts: body.message.ts,
+      // Channel of message
+      channel: body.channel.id,
+      blocks: [
+        {
+          type: 'section',
+          text: {
+            type: 'mrkdwn',
+            text: '*The button was clicked!*'
+          }
+        }
+      ],
+      text: 'Message from Test App'
+    });
+    console.log(result);
+  }
+  catch (error) {
+    console.error(error);
+  }
+});
+
 //basic listener that publishes a view to the home tab where app lives
 slackApp.event('app_home_opened', async ({ event, client, context }) => {
   try {
@@ -188,7 +257,6 @@ slackApp.action('Create_SoW', async ({ ack, body, client, respond, say, context 
   try {
     // update the button message
     const result = await slackApp.client.chat.update({
-      token: context.botToken,
       // ts of message to update
       ts: body.message_ts,
       // Channel to send message to
