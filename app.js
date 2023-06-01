@@ -349,6 +349,7 @@ slackApp.command('/runprogram', async ({ ack, body, client }) => {
       view: {
         type: 'modal',
         callback_id: 'info_request',
+        private_metadata: JSON.stringify({ channelId: body.channel.id }),  // Store the channel ID
         title: {
           type: 'plain_text',
           text: 'Information Request'
