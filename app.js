@@ -36,7 +36,6 @@ async function getUserInfo(client, userId) {
 slackApp.command('/helloworld', async ({ ack, payload, context }) => {
   // acknowledge the request
   ack();
-
   try { 
     const result = await slackApp.client.chat.postMessage({
       token: context.botToken,
@@ -90,9 +89,8 @@ slackApp.action('button_abc', async ({ ack, body, context }) => {
             type: 'mrkdwn',
             text: '*The button was clicked!*'
           }
-        }
+        },
       ],
-      text: 'Message from Test App'
     });
     console.log(result);
   }
@@ -198,7 +196,6 @@ slackApp.action('open_modal_button', async ({ ack, body, client }) => {
 slackApp.message('hi', async ({ message, say, client }) => {
   const user = await getUserInfo(client, message.user);
   const fullName = user && user.profile.real_name;
-  
   try {
     // respond hello with user's full name - ask what they want to do -> pick one
     await say({
@@ -273,7 +270,6 @@ slackApp.action('Create_SoW', async ({ ack, body, client, say }) => {
         },
       },
     ],
-    text: 'Message from Test App'
   });
   // Call views.open with the built-in client
   try {
@@ -345,7 +341,12 @@ slackApp.action('Create_SoW', async ({ ack, body, client, say }) => {
 
 slackApp.view('view_1', async ({ ack, view, client }) => {
   await ack();
-  const user_input = view.state.values.company_name_block.company_name_input.value;
+  const user_input = view.state.values.company_name_block.company_name_input;
+  const user = body.user.id.value
+  
+  // store values
+  console.log(val);
+  console.log(user);
   await client.chat.postMessage({ //sending metadata out
     text: `The submitted value is: ${user_input}`,
   });
