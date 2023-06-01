@@ -248,6 +248,7 @@ slackApp.action('Create_SoW', async ({ ack, body, client, say }) => {
   try {
     // update the button message
     const result = await slackApp.client.chat.update({
+      token: context.botToken,
       // ts of message to update
       ts: body.message_ts,
       // Channel to send message to
