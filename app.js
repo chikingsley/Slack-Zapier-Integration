@@ -33,60 +33,6 @@ async function getUserInfo(client, userId) {
   throw new Error('Maximum retry attempts exceeded');
 }
 
-// Call views.open with the built-in client
-// MAKE MODAL OBJECT CALLED CHICKEN - view1 callback_id
-const chicken = client.views.open({
-  // Pass a valid trigger_id within 3 seconds of receiving it
-  trigger_id: body.trigger_id,
-  // View payload
-  view: {
-    type: 'modal',
-    // View identifier - USE IN MODAL CALLBACKS
-    callback_id: 'view_1',
-    private_metadata: 'my neck, my back...',
-    title: {
-      type: 'plain_text',
-      text: 'Modal title',
-    },
-    // Submit button
-    submit: {
-      type: 'plain_text',
-      text: 'Submit',
-    },
-    // Close Button
-    close: {
-      type: 'plain_text',
-      text: 'Close',
-    },
-    blocks: [
-      // User Input Block
-      {
-        type: 'input',
-        block_id: 'company_name_block', 
-        // Label/Title above input field 
-        label: {
-          type: 'plain_text',
-          text: 'Company name',
-        },
-        // Actual Input Field
-        element: {
-          type: 'plain_text_input',
-          action_id: 'company_name_input',
-        },
-        // Input Field Placeholder text
-        element: {
-          type: 'plain_text_input',
-          action_id: 'input1',
-          placeholder: {
-            type: 'plain_text',
-            text: 'Type in here',
-          }
-        }
-      },
-    ],
-  },
-});
-
 //basic listener that publishes a view to the home tab where app lives
 slackApp.event('app_home_opened', async ({ event, client, context }) => {
   try {
@@ -279,27 +225,60 @@ slackApp.action('Create_SoW', async ({ ack, body, client, respond, say, context 
       },
     ],
   });
-
-  // Ask the user for the company name or POC using blocks
-  await respond({
-    text: "Who are we doing this project for? Respond with a company name or the name of the point of contact (POC).",
-    blocks: [
-      {
-        type: 'section',
-        text: {
-          type: 'mrkdwn',
-          text: "Who are we doing this project for? Respond with a company name or the name of the point of contact (POC).",
-        },
-      },
-    ],
-  });
-
-  // Open Modal to get user input
+  
   try {
-    await client.views.open({
+    // Call views.open with the built-in client
+    // MAKE MODAL OBJECT CALLED CHICKEN - view1 callback_id
+    const chicken = client.views.open({
+      // Pass a valid trigger_id within 3 seconds of receiving it
       trigger_id: body.trigger_id,
-      //view payload and call modal
-      view: chicken
+      // View payload
+      view: {
+        type: 'modal',
+        // View identifier - USE IN MODAL CALLBACKS
+        callback_id: 'view_1',
+        private_metadata: 'my neck, my back...',
+        title: {
+          type: 'plain_text',
+          text: 'Modal title',
+        },
+        // Submit button
+        submit: {
+          type: 'plain_text',
+          text: 'Submit',
+        },
+        // Close Button
+        close: {
+          type: 'plain_text',
+          text: 'Close',
+        },
+        blocks: [
+          // User Input Block
+          {
+            type: 'input',
+            block_id: 'company_name_block', 
+            // Label/Title above input field 
+            label: {
+              type: 'plain_text',
+              text: 'Company name',
+            },
+            // Actual Input Field
+            element: {
+              type: 'plain_text_input',
+              action_id: 'company_name_input',
+            },
+            // Input Field Placeholder text
+            element: {
+              type: 'plain_text_input',
+              action_id: 'input1',
+              placeholder: {
+                type: 'plain_text',
+                text: 'Type in here',
+              }
+            }
+          },
+        ],
+      },
     });
   }
   catch (error) {
