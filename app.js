@@ -126,7 +126,7 @@ async function getUserInfo(client, userId) {
 }
 
 //initializes when user says 'hi'
-sslackApp.message('hi', async ({ message, say, client }) => {
+slackApp.message('hi', async ({ message, say, client }) => {
   const user = await getUserInfo(client, message.user);
   const fullName = user && user.profile.real_name;
   const greetingMessage = `Hello, ${fullName}!`;
