@@ -238,13 +238,14 @@ slackApp.action('Create_SoW', async ({ ack, body, client, context }) => {
   await ack();
   try {
     // update the button message
-    const result = await slackApp.client.chat.update({
+    const result = await slackApp.client.chat.postMessage({
       token: context.botToken,
       // ts of message to update
       ts: body.message_ts,
       // Channel to send message to
       channel: body.channel.id,
       // Message
+      text: `Okay - let's make a Statement of Work (SoW)!!\n Who are we doing this project for? Respond with a company name or the name of the point of contact (POC).`,
       blocks: [
         {
           type: 'section',
