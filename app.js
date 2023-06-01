@@ -323,7 +323,7 @@ slackApp.action('Create_SoW', async ({ ack, body, client, context }) => {
   }
 });
 
-slackApp.view('view_1', async ({ ack, view, body, client }) => {
+slackApp.view('view_1', async ({ ack, view, body, client, context }) => {
   await ack();
   const user_input = view.state.values.company_name_block.company_name_input;
   const user = body.user.id;
