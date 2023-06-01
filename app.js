@@ -260,10 +260,6 @@ slackApp.action('Create_SoW', async ({ ack, body, client, context }) => {
   catch (error) {
     console.error(error);
   }
-});
-
-slackApp.action('Create_SoW', async ({ ack, body, client, context }) => {
-  await ack();
   // Call views.open with the built-in client
   try {
     // MAKE MODAL OBJECT CALLED CHICKEN - view1 callback_id
@@ -326,6 +322,7 @@ slackApp.action('Create_SoW', async ({ ack, body, client, context }) => {
     console.error(error);
   }
 });
+
 
 slackApp.view('view_1', async ({ ack, view, body, client, context }) => {
   await ack();
