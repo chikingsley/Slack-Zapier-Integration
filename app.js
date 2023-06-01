@@ -191,7 +191,7 @@ slackApp.action('open_modal_button', async ({ ack, body, client }) => {
   }
 })
 
-slackApp.message('hi', async ({ message, say, client, context }) => {
+slackApp.message('hi', async ({ message, payload, client, context }) => {
   const user = await getUserInfo(client, message.user);
   const fullName = user && user.profile.real_name;
   try {
@@ -233,7 +233,7 @@ slackApp.message('hi', async ({ message, say, client, context }) => {
 });
 
 //makes modal to ger user input to make sow
-slackApp.action('Create_SoW', async ({ ack, body, client, say }) => {
+slackApp.action('Create_SoW', async ({ ack, body, client, payload }) => {
   // acknowledge the button request
   await ack();
   try {
