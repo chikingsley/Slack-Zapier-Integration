@@ -128,7 +128,7 @@ slackApp.action('open_modal_button', async ({ ack, body, client, respond }) => {
   }
 })
 
-slackApp.message('sow', async ({ message, say, client }) => {
+slackApp.message('hi', async ({ message, say, client }) => {
   const user = await getUserInfo(client, message.user);
   const fullName = user && user.profile.real_name;
   
