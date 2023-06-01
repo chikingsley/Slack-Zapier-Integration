@@ -21,7 +21,6 @@ slackApp.command('/delete', async ({ command, ack, client }) => {
   }
 });
 
-//app home page view and buttons
 slackApp.event('app_home_opened', async ({ event, client }) => {
   await client.views.publish({
     user_id: event.user,
@@ -64,7 +63,6 @@ slackApp.event('app_home_opened', async ({ event, client }) => {
   });
 });
 
-//sample modal for the home page
 slackApp.action('open_modal_button', async ({ ack, body, client, respond }) => {
   await ack();
   await client.views.open({
@@ -125,45 +123,42 @@ async function getUserInfo(client, userId) {
   throw new Error('Maximum retry attempts exceeded');
 }
 
-//initializes when user says 'hi'
 slackApp.message('hi', async ({ message, say, client }) => {
   const user = await getUserInfo(client, message.user);
   const fullName = user && user.profile.real_name;
   const greetingMessage = `Hello, ${fullName}!`;
   await say(greetingMessage);
-  await say({
-    blocks: [
-      {
-        type: 'section',
-        text: {
-          type: 'mrkdwn',
-          text: "It's good to see you 😇. What do you want to do today?",
-        },
+  const blocks = [
+    {
+      type: 'section',
+      text: {
+        type: 'mrkdwn',
+        text: "It's good to see you 😇. What do you want to do today?",
       },
-      {
-        type: 'section',
-        text: {
-          type: 'mrkdwn',
-          text: 'Pick one⬇️',
-        },
+    },
+    {
+      type: 'section',
+      text: {
+        type: 'mrkdwn',
+        text: 'Pick one⬇️',
       },
-      {
-        type: 'actions',
-        elements: [
-          {
-            type: 'button',
-            text: {
-              type: 'plain_text',
-              text: 'Create SoW',
-            },
-            action_id: 'Create_SoW',
+    },
+    {
+      type: 'actions',
+      elements: [
+        {
+          type: 'button',
+          text: {
+            type: 'plain_text',
+            text: 'Create SoW',
           },
-        ],
-      }
-    ]
-  });
+          action_id: 'Create_SoW',
+        },
+      ],
+    },
+  ];
+  await say({ blocks });
 });
-
 
 slackApp.action('Create_SoW', async ({ ack, body, client, respond, say }) => {
   await ack();
@@ -200,6 +195,7 @@ slackApp.action('Create_SoW', async ({ ack, body, client, respond, say }) => {
       },
     ],
   });
+  
 
   // Ask the user for the company name or POC using blocks
   await respond({
@@ -221,7 +217,6 @@ slackApp.action('Create_SoW', async ({ ack, body, client, respond, say }) => {
     view: {
       type: 'modal',
       callback_id: 'sow_modal',
-      block_id: 'company_name_block',
       title: {
         type: 'plain_text',
         text: 'Create a SoW',
@@ -237,6 +232,7 @@ slackApp.action('Create_SoW', async ({ ack, body, client, respond, say }) => {
       blocks: [
         {
           type: 'input',
+          block_id: 'company_name_block',  // Add this line
           label: {
             type: 'plain_text',
             text: 'Company name',
@@ -249,11 +245,13 @@ slackApp.action('Create_SoW', async ({ ack, body, client, respond, say }) => {
       ],
     },
   });
+await say({ text: 'The modal has been opened.' });
 });
 
 slackApp.view('sow_modal', async ({ ack, body, view, client }) => {
   await ack();
   const user_input = view.state.values.company_name_block.company_name_input.value;
+  const channelId = body.channel.id; // Get the channel ID from the body object
   await client.chat.postMessage({
     channel: channelId,
     text: `The submitted value is: ${user_input}`,
