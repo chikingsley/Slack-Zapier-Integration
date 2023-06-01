@@ -333,9 +333,6 @@ slackApp.view('view_1', async ({ ack, view, body, client, context }) => {
   console.log(user);
   await client.chat.postMessage({ //sending metadata out
     token: context.botToken,
-    // ts of message to update
-    ts: body.message.ts,
-    // Channel of message
     channel: body.channel.id,
     text: `The submitted value is: ${user_input}`,
   });
