@@ -217,7 +217,6 @@ slackApp.action('Create_SoW', async ({ ack, body, client, respond, say }) => {
     view: {
       type: 'modal',
       callback_id: 'sow_modal',
-      block_id: 'company_name_block',
       title: {
         type: 'plain_text',
         text: 'Create a SoW',
@@ -245,7 +244,7 @@ slackApp.action('Create_SoW', async ({ ack, body, client, respond, say }) => {
       ],
     },
   });
-  await say({ text: 'The modal has been opened.' });
+await say({ text: 'The modal has been opened.' });
 });
 
 slackApp.view('sow_modal', async ({ ack, body, view, client }) => {
