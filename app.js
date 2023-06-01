@@ -232,7 +232,7 @@ slackApp.message('hi', async ({ message, client, context }) => {
 });
 
 //makes modal to ger user input to make sow
-slackApp.action('Create_SoW', async ({ ack, body, client }) => {
+slackApp.action('Create_SoW', async ({ ack, body, client, context }) => {
   // acknowledge the button request
   await ack();
   try {
@@ -307,11 +307,6 @@ slackApp.action('Create_SoW', async ({ ack, body, client }) => {
             element: {
               type: 'plain_text_input',
               action_id: `company_name_input`,
-            },
-            // Input Field Placeholder text
-            element: {
-              type: 'plain_text_input',
-              action_id: 'input1',
               placeholder: {
                 type: 'plain_text',
                 text: 'Type in here',
@@ -330,7 +325,7 @@ slackApp.action('Create_SoW', async ({ ack, body, client }) => {
 slackApp.view('view_1', async ({ ack, view, body, client }) => {
   await ack();
   const user_input = view.state.values.company_name_block.company_name_input;
-  const user = body.user.id.value
+  const user = body.user.id;
   
   // store values
   console.log(val);
