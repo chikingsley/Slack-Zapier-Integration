@@ -198,6 +198,7 @@ slackApp.message('hi', async ({ message, client, context }) => {
     const result = await slackApp.client.chat.postMessage({
       token: context.botToken,
       // include a button in the message
+      text: `Hello, ${fullName}!\n It's good to see you 😇. What do you want to do today?\n Pick one⬇️`,
       //respond hello with user's full name - ask what they want to do -> pick one
       blocks: [
         {
