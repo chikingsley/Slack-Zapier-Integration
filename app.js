@@ -9,6 +9,7 @@ const slackApp = new App({
 });
 
 async function getUserInfo(client, userId) {
+  console.log(client);  // Add this line
   let retries = 0;
   const maxRetries = 5;
   while (retries < maxRetries) {
