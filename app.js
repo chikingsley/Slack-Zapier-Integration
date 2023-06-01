@@ -127,7 +127,7 @@ slackApp.action('open_modal_button', async ({ ack, body, client, respond }) => {
   }
 })
 
-slackApp.message('hi', async ({ message, say, client }) => {
+slackApp.message('sow', async ({ message, say, client }) => {
   const user = await getUserInfo(client, message.user);
   const fullName = user && user.profile.real_name;
   
@@ -181,6 +181,7 @@ slackApp.message('hi', async ({ message, say, client }) => {
   }
 });
 
+//makes modal to ger user input to make sow
 slackApp.action('Create_SoW', async ({ ack, body, client, respond, say, context }) => {
   // acknowledge the button request
   await ack();
@@ -225,9 +226,9 @@ slackApp.action('Create_SoW', async ({ ack, body, client, respond, say, context 
       },
     ],
   });
-  
+
+  // Call views.open with the built-in client
   try {
-    // Call views.open with the built-in client
     // MAKE MODAL OBJECT CALLED CHICKEN - view1 callback_id
     const chicken = client.views.open({
       // Pass a valid trigger_id within 3 seconds of receiving it
@@ -255,6 +256,12 @@ slackApp.action('Create_SoW', async ({ ack, body, client, respond, say, context 
         blocks: [
           // User Input Block
           {
+            // label above dialoge box
+            type: 'section',
+            text: {
+              type: 'mrkdwn',
+              text: 'Please enter the company name'
+            },
             type: 'input',
             block_id: 'company_name_block', 
             // Label/Title above input field 
