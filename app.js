@@ -197,8 +197,6 @@ slackApp.message('hi', async ({ message, client, context, body }) => {
   try {
     const result = await slackApp.client.chat.postMessage({
       token: context.botToken,
-      // ts of message to update
-      ts: body.message.ts,
       // Channel of message
       channel: body.channel.id,
       text: `Hello, ${fullName}!\n It's good to see you 😇. What do you want to do today?\n Pick one⬇️`,
