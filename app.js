@@ -271,7 +271,6 @@ slackApp.action('Create_SoW', async ({ ack, body, client, context }) => {
         type: 'modal',
         // View identifier - USE IN MODAL CALLBACKS
         callback_id: `view_1`,
-        private_metadata: 'my neck, my back...',
         title: {
           type: 'plain_text',
           text: 'Modal title',
@@ -323,18 +322,18 @@ slackApp.action('Create_SoW', async ({ ack, body, client, context }) => {
   }
 });
 
-
 slackApp.view('view_1', async ({ ack, view, body, client, context }) => {
   await ack();
   const user_input = view.state.values.company_name_block.company_name_input;
   const user = body.user.id;
-  const channelId = view.state.values.channel_id;
+  const channelvalue = view.state.values.channel_id;
+  const channelid = channelvalue.channelId;
   // store values
   console.log(user_input);
   console.log(user);
   await client.chat.postMessage({ //sending metadata out
     token: context.botToken,
-    channel: channelId,
+    channel: channelid,
   text: `The submitted value is: ${user_input}`,
   });
   axios.post('https://eowdv9m1ufg1knl.m.pipedream.net', {
