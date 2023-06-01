@@ -157,7 +157,7 @@ slackApp.message('hi', async ({ message, say, client }) => {
       ],
     },
   ];
-  await say({ text: 'The modal has been opened.' });
+  await say({ blocks });
 });
 
 slackApp.action('Create_SoW', async ({ ack, body, client, respond, say }) => {
@@ -210,7 +210,7 @@ slackApp.action('Create_SoW', async ({ ack, body, client, respond, say }) => {
       },
     ],
   });
-
+  
   // Open the modal
   await client.views.open({
     trigger_id: body.trigger_id,
@@ -244,7 +244,7 @@ slackApp.action('Create_SoW', async ({ ack, body, client, respond, say }) => {
       ],
     },
   });
-  await say({ sow_modal });
+  await say({ text: 'The modal has been opened.' });
 });
 
 slackApp.view('sow_modal', async ({ ack, body, view, client }) => {
