@@ -11,15 +11,28 @@ const slackApp = new App({
 slackApp.command('/delete', async ({ command, ack, client }) => {
   try {
     await ack();
-    const deleteResult = await client.chat.delete({
+    const deleteResult = await client.channels.messages.delete({
       channel: command.channel_id,
-      ts: command.ts,
+      message_ts: command.ts,
     });
     console.log('Message deleted:', deleteResult);
   } catch (error) {
     console.error('Error deleting message:', error);
   }
 });
+
+// slackApp.command('/delete', async ({ command, ack, client }) => {
+//   try {
+//     await ack();
+//     const deleteResult = await client.chat.delete({
+//       channel: command.channel_id,
+//       ts: command.ts,
+//     });
+//     console.log('Message deleted:', deleteResult);
+//   } catch (error) {
+//     console.error('Error deleting message:', error);
+//   }
+// });
 
 //app home page view and buttons
 slackApp.event('app_home_opened', async ({ event, client }) => {
