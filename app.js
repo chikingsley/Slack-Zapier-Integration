@@ -185,7 +185,6 @@ slackApp.message('sow', async ({ message, say, client }) => {
 slackApp.action('Create_SoW', async ({ ack, body, client, respond, say, context }) => {
   // acknowledge the button request
   await ack();
-
   try {
     // update the button message
     const result = await slackApp.client.chat.update({
@@ -212,7 +211,6 @@ slackApp.action('Create_SoW', async ({ ack, body, client, respond, say, context 
   catch (error) {
     console.error(error);
   }
-
   // Ask the user to make a Statement of Work (SoW) - let them know to enter company name in dialogue box
   await respond({
     text: `Okay - let's make a Statement of Work (SoW)!!\n Who are we doing this project for? Respond with a company name or the name of the point of contact (POC).`,
@@ -226,7 +224,6 @@ slackApp.action('Create_SoW', async ({ ack, body, client, respond, say, context 
       },
     ],
   });
-
   // Call views.open with the built-in client
   try {
     // MAKE MODAL OBJECT CALLED CHICKEN - view1 callback_id
