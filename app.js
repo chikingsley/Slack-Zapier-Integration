@@ -8,32 +8,6 @@ const slackApp = new App({
   logLevel: LogLevel.DEBUG,
 });
 
-async function getUserInfo(client, userId) {
-  console.log(client);  // Add this line
-  let retries = 0;
-  const maxRetries = 5;
-  while (retries < maxRetries) {
-    try {
-      const response = await client.users.info({ user: userId });
-      if (response.ok) {
-        return response.user;
-      } else {
-        return null;
-      }
-    } catch (error) {
-      if (error.response.headers['retry-after']) {
-        await new Promise((resolve) =>
-          setTimeout(resolve, parseInt(error.response.headers['retry-after']) * 1000)
-        );
-      } else {
-        throw error;
-      }
-    }
-    retries++;
-  }
-  throw new Error('Maximum retry attempts exceeded');
-}
-
 //basic listener that publishes a view to the home tab where app lives
 slackApp.event('app_home_opened', async ({ event, client, context }) => {
   try {
@@ -127,6 +101,32 @@ slackApp.action('open_modal_button', async ({ ack, body, client, respond }) => {
     console.error(error);
   }
 })
+
+async function getUserInfo(client, userId) {
+  console.log(client);  // Add this line
+  let retries = 0;
+  const maxRetries = 5;
+  while (retries < maxRetries) {
+    try {
+      const response = await client.users.info({ user: userId });
+      if (response.ok) {
+        return response.user;
+      } else {
+        return null;
+      }
+    } catch (error) {
+      if (error.response.headers['retry-after']) {
+        await new Promise((resolve) =>
+          setTimeout(resolve, parseInt(error.response.headers['retry-after']) * 1000)
+        );
+      } else {
+        throw error;
+      }
+    }
+    retries++;
+  }
+  throw new Error('Maximum retry attempts exceeded');
+}
 
 slackApp.message('hi', async ({ message, say, client }) => {
   const user = await getUserInfo(client, message.user);
