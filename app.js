@@ -341,6 +341,131 @@ slackApp.view('view_1', async ({ ack, view, body, client, context }) => {
   console.log('Data has been stored and sent');
 });
 
+slackApp.message('New Client - Enter Required Information', async ({ body, client, context }) => {
+  await ack();
+
+  try {
+    const result = await client.views.open({
+      trigger_id: body.trigger_id,
+      view: {
+        type: 'modal',
+        callback_id: 'info_request',
+        title: {
+          type: 'plain_text',
+          text: 'Information Request'
+        },
+        submit: {
+          type: 'plain_text',
+          text: 'Submit'
+        },
+        blocks: [
+          {
+            type: 'input',
+            block_id: 'poc_first_name_block',
+            label: {
+              type: 'plain_text',
+              text: 'POC First Name'
+            },
+            element: {
+              type: 'plain_text_input',
+              action_id: 'poc_first_name_input'
+            }
+          },
+          {
+            type: 'input',
+            block_id: 'poc_last_name_block',
+            label: {
+              type: 'plain_text',
+              text: 'POC Last Name'
+            },
+            element: {
+              type: 'plain_text_input',
+              action_id: 'poc_last_name_input'
+            }
+          },
+          {
+            type: 'input',
+            block_id: 'poc_email_block',
+            label: {
+              type: 'plain_text',
+              text: 'POC Email'
+            },
+            element: {
+              type: 'plain_text_input',
+              action_id: 'poc_email_input'
+            }
+          },
+          {
+            type: 'input',
+            block_id: 'company_name_block',
+            label: {
+              type: 'plain_text',
+              text: 'Company Name'
+            },
+            element: {
+              type: 'plain_text_input',
+              action_id: 'company_name_input'
+            }
+          },
+          {
+            type: 'input',
+            block_id: 'company_address_block',
+            label: {
+              type: 'plain_text',
+              text: 'Company Address'
+            },
+            element: {
+              type: 'plain_text_input',
+              action_id: 'company_address_input'
+            }
+          },
+        ]
+      }
+    });
+    console.log(result);
+  }
+  catch (error) {
+    console.error(error);
+  }
+});
+
+// send client info to zapier
+slackApp.view('info_request', async ({ ack, view, body, client, context }) => {
+  await ack();
+  
+  const user_inputs = {
+    poc_first_name: view.state.values.poc_first_name_block.poc_first_name_input.value,
+    poc_last_name: view.state.values.poc_last_name_block.poc_last_name_input.value,
+    poc_email: view.state.values.poc_email_block.poc_email_input.value,
+    company_name: view.state.values.company_name_block.company_name_input.value,
+    company_address: view.state.values.company_address_block.company_address_input.value,
+    submission_date: new Date().toISOString()
+  };
+
+  const user = body.user.id;
+  const privateMetadata = JSON.parse(view.private_metadata);  // Parse the private metadata
+  const channelId = privateMetadata.channelId;  // Retrieve the channel ID
+
+  await client.chat.postMessage({ //sending metadata out
+    token: context.botToken,
+    channel: channelId,
+    text: `The submitted values are: ${JSON.stringify(user_inputs, null, 2)}`,
+  });
+
+  axios.post('https://hooks.zapier.com/hooks/catch/15387298/3t652em/', user_inputs);
+
+  console.log('Data has been stored and sent');
+});
+
+
+(async () => {
+  // Start your app
+  await slackApp.start(process.env.PORT || 3000);
+  console.log('⚡️ Bolt app is running!');
+})();
+
+
+
 (async () => {
   await slackApp.start(process.env.PORT || 3000);
   console.log('⚡️ Bolt app is running!');
