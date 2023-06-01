@@ -341,7 +341,7 @@ slackApp.view('view_1', async ({ ack, view, body, client, context }) => {
   console.log('Data has been stored and sent');
 });
 
-slackApp.command('/runprogram', async ({ ack, payload, context }) => {
+slackApp.command('/runprogram', async ({ ack, body, client }) => {
   await ack();
   try {
     const result = await client.views.open({
