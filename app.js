@@ -329,7 +329,7 @@ slackApp.view('view_1', async ({ ack, view, body, client }) => {
   const user = body.user.id;
   
   // store values
-  console.log(val);
+  console.log(user_input);
   console.log(user);
   await client.chat.postMessage({ //sending metadata out
     token: context.botToken,
