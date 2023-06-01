@@ -21,6 +21,7 @@ slackApp.command('/delete', async ({ command, ack, client }) => {
   }
 });
 
+//app home page view and buttons
 slackApp.event('app_home_opened', async ({ event, client }) => {
   await client.views.publish({
     user_id: event.user,
@@ -63,6 +64,7 @@ slackApp.event('app_home_opened', async ({ event, client }) => {
   });
 });
 
+//sample modal for the home page
 slackApp.action('open_modal_button', async ({ ack, body, client, respond }) => {
   await ack();
   await client.views.open({
@@ -124,48 +126,44 @@ async function getUserInfo(client, userId) {
 }
 
 //initializes when user says 'hi'
-slackApp.message('hi', async ({ message, say, client }) => {
+sslackApp.message('hi', async ({ message, say, client }) => {
   const user = await getUserInfo(client, message.user);
   const fullName = user && user.profile.real_name;
   const greetingMessage = `Hello, ${fullName}!`;
   await say(greetingMessage);
-  //communication
-  const blocks = [
-    {//section - good to see you (mrkdown 1)
-      type: 'section',
-      text: {
-        type: 'mrkdwn',
-        text: "It's good to see you 😇. What do you want to do today?",
-      },
-    },
-    {//section - pick one (mrkdown 2)
-      type: 'section',
-      text: {
-        type: 'mrkdwn',
-        text: 'Pick one⬇️',
-      },
-    }
-  ]
-  //action
-  const button1 = [
-    {//actions - buttons
-      type: 'actions',
-      elements: [
-        {
-          type: 'button',
-          text: {
-            type: 'plain_text',
-            text: 'Create SoW',
-          },
-          action_id: 'Create_SoW',
+  await say({
+    blocks: [
+      {
+        type: 'section',
+        text: {
+          type: 'mrkdwn',
+          text: "It's good to see you 😇. What do you want to do today?",
         },
-      ],
-    }
-  ]
-    ;
-  await say({ blocks });
-  await say({ button1 });
+      },
+      {
+        type: 'section',
+        text: {
+          type: 'mrkdwn',
+          text: 'Pick one⬇️',
+        },
+      },
+      {
+        type: 'actions',
+        elements: [
+          {
+            type: 'button',
+            text: {
+              type: 'plain_text',
+              text: 'Create SoW',
+            },
+            action_id: 'Create_SoW',
+          },
+        ],
+      }
+    ]
+  });
 });
+
 
 slackApp.action('Create_SoW', async ({ ack, body, client, respond, say }) => {
   await ack();
