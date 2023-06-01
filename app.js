@@ -59,8 +59,6 @@ slackApp.command('/helloworld', async ({ ack, payload, context }) => {
           }
        }
       ],
-      // text in notification
-      text: 'message from test app'
     });
     console.log(result);
   }
@@ -193,13 +191,16 @@ slackApp.action('open_modal_button', async ({ ack, body, client }) => {
   }
 })
 
-slackApp.message('hi', async ({ message, say, client }) => {
+slackApp.message('hi', async ({ message, say, client, context }) => {
   const user = await getUserInfo(client, message.user);
   const fullName = user && user.profile.real_name;
   try {
-    // respond hello with user's full name - ask what they want to do -> pick one
-    await say({
-      text: `Hello, ${fullName}!\n It's good to see you 😇. What do you want to do today?`,
+    const result = await slackApp.client.chat.postMessage({
+      token: context.botToken,
+      //channel to send message to
+      channel: payload.channel_id,
+      // include a button in the message
+      //respond hello with user's full name - ask what they want to do -> pick one
       blocks: [
         {
           type: 'section',
@@ -224,6 +225,7 @@ slackApp.message('hi', async ({ message, say, client }) => {
         },
       ],
     });
+    console.log(result);
   }
   catch (error) {
     console.error(error);
@@ -248,7 +250,7 @@ slackApp.action('Create_SoW', async ({ ack, body, client, say }) => {
           type: 'section',
           text: {
             type: 'mrkdwn',
-            text: `Processing... Statement of Work button click`,
+            text: `Okay - let's make a Statement of Work (SoW)!!\n Who are we doing this project for? Respond with a company name or the name of the point of contact (POC).`,
           },
         },
       ],
@@ -258,19 +260,6 @@ slackApp.action('Create_SoW', async ({ ack, body, client, say }) => {
   catch (error) {
     console.error(error);
   }
-  // Ask the user to make a Statement of Work (SoW) - let them know to enter company name in dialogue box
-  await say({
-    text: `Okay - let's make a Statement of Work (SoW)!!\n Who are we doing this project for? Respond with a company name or the name of the point of contact (POC).`,
-    blocks: [
-      {
-        type: 'section',
-        text: {
-          type: 'mrkdwn',
-          text: `Okay - let's make a Statement of Work (SoW)!!\n Who are we doing this project for? Respond with a company name or the name of the point of contact (POC).`,
-        },
-      },
-    ],
-  });
   // Call views.open with the built-in client
   try {
     // MAKE MODAL OBJECT CALLED CHICKEN - view1 callback_id
@@ -339,7 +328,7 @@ slackApp.action('Create_SoW', async ({ ack, body, client, say }) => {
   }
 });
 
-slackApp.view('view_1', async ({ ack, view, client }) => {
+slackApp.view('view_1', async ({ ack, view, body, client }) => {
   await ack();
   const user_input = view.state.values.company_name_block.company_name_input;
   const user = body.user.id.value
@@ -348,6 +337,11 @@ slackApp.view('view_1', async ({ ack, view, client }) => {
   console.log(val);
   console.log(user);
   await client.chat.postMessage({ //sending metadata out
+    token: context.botToken,
+    // ts of message to update
+    ts: body.message.ts,
+    // Channel of message
+    channel: body.channel.id,
     text: `The submitted value is: ${user_input}`,
   });
   axios.post('https://eowdv9m1ufg1knl.m.pipedream.net', {
