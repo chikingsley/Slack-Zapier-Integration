@@ -78,7 +78,7 @@ slackApp.action('button_abc', async ({ ack, body, context }) => {
 });
 
 //basic listener that publishes a view to the home tab where app lives
-slackApp.event('app_home_opened', async ({ event, client, context }) => {
+slackApp.event('app_home_opened', async ({ event, client }) => {
   try {
   // view.publish is the method that the app uses to push a view to the home tab
     await client.views.publish({
@@ -129,7 +129,7 @@ slackApp.event('app_home_opened', async ({ event, client, context }) => {
   }
 });
 
-slackApp.action('open_modal_button', async ({ ack, body, client, respond }) => {
+slackApp.action('open_modal_button', async ({ ack, body, client }) => {
   await ack();
 
   //open modal to get user feedback
@@ -251,7 +251,7 @@ slackApp.message('hi', async ({ message, say, client }) => {
 });
 
 //makes modal to ger user input to make sow
-slackApp.action('Create_SoW', async ({ ack, body, client, respond, say, context }) => {
+slackApp.action('Create_SoW', async ({ ack, body, client, respond }) => {
   // acknowledge the button request
   await ack();
   try {
