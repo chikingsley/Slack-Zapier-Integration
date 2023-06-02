@@ -232,6 +232,7 @@ slackApp.message('hi', async ({ message, client, context }) => {
   }
 });
 
+/*
 //makes modal to ger user input to make sow
 slackApp.action('Create_SoW', async ({ ack, body, client, context }) => {
   // acknowledge the button request
@@ -318,6 +319,35 @@ slackApp.action('Create_SoW', async ({ ack, body, client, context }) => {
         ],
       },
     });
+  }
+  catch (error) {
+    console.error(error);
+  }
+});
+*/
+
+slackApp.action('Create_SoW', async ({ ack, body, context }) => {
+  // Acknowledge the button request
+  await ack();
+  try {
+    // Update the message
+    const result = await slackApp.client.chat.update({
+      token: context.botToken,
+      // ts of message to update
+      ts: body.message.ts,
+      // Channel of message
+      channel: body.channel.id,
+      blocks: [
+        {
+          type: 'section',
+          text: {
+            type: 'mrkdwn',
+            text: '*The button was clicked!*'
+          }
+        },
+      ],
+    });
+    console.log(result);
   }
   catch (error) {
     console.error(error);
