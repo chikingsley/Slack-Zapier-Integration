@@ -354,8 +354,17 @@ slackApp.action('Create_SoW', async ({ ack, body, context }) => {
   }
 });
 
-slackApp.message('button', async ({ message, say }) => {
-  await say(`The word "button" was mentioned in the channel by <@${message.user}>!`);
+slackApp.event('message', async ({ event }) => {
+  if (event.subtype === 'message_changed') {
+    const originalMessage = event.previous_message;
+    const updatedMessage = event.message;
+
+    console.log('Message has been modified');
+    console.log('Original Message:', originalMessage);
+    console.log('Updated Message:', updatedMessage);
+    
+    // Perform actions based on the modified message
+  }
 });
 
 slackApp.view('view_1', async ({ ack, view, body, client, context }) => {
