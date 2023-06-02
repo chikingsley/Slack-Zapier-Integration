@@ -354,6 +354,10 @@ slackApp.action('Create_SoW', async ({ ack, body, context }) => {
   }
 });
 
+app.message('button', async ({ message, say }) => {
+  await say(`The word "button" was mentioned in the channel by <@${message.user}>!`);
+});
+
 slackApp.view('view_1', async ({ ack, view, body, client, context }) => {
   await ack();
   const user_input = view.state.values.company_name_block.company_name_input;
