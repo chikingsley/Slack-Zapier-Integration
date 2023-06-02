@@ -220,6 +220,36 @@ slackApp.message('hi', async ({ message, client, context }) => {
   console.log('api sent hi');
 });
 
+slackApp.message('hello', async ({ message, client, context }) => {
+  const user = await getUserInfo(client, message.user);
+  const fullName = user && user.profile.real_name;
+  const channelid = message.channel;
+  try {
+    const result = await slackApp.client.chat.postMessage({
+      token: context.botToken,
+      channel: channelid,
+      blocks: [
+        {
+          type: 'actions',
+          elements: [
+            {
+              type: 'button',
+              text: {
+                type: 'plain_text',
+                text: 'Create SoW',
+              },
+              action_id: 'Create_SoW',
+            },
+          ],
+        },
+      ],
+    });
+    console.log(result);
+  } catch (error) {
+    console.error(error);
+  }
+});
+
 /*
 //makes modal to ger user input to make sow
 slackApp.action('Create_SoW', async ({ ack, body, client, context }) => {
@@ -314,33 +344,34 @@ slackApp.action('Create_SoW', async ({ ack, body, client, context }) => {
 });
 */
 
-slackApp.action('Create_SoW', async ({ ack, body, context }) => {
-  // Acknowledge the button request
-  await ack();
+slackApp.message('hello', async ({ message, client, context }) => {
+  const channelid = message.channel;
   try {
-    // Update the message
-    const result = await slackApp.client.chat.update({
+    const result = await slackApp.client.chat.postMessage({
       token: context.botToken,
-      // ts of message to update
-      ts: body.message.ts,
-      // Channel of message
-      channel: body.channel.id,
+      channel: channelid,
       blocks: [
         {
-          type: 'section',
-          text: {
-            type: 'mrkdwn',
-            text: '*The button was clicked!*'
-          }
+          type: 'actions',
+          elements: [
+            {
+              type: 'button',
+              text: {
+                type: 'plain_text',
+                text: 'Create SoW',
+              },
+              action_id: 'Create_SoW',
+            },
+          ],
         },
       ],
     });
     console.log(result);
-  }
-  catch (error) {
+  } catch (error) {
     console.error(error);
   }
 });
+
 
 slackApp.event('message', async ({ event }) => {
   if (event.subtype === 'message_changed') {
