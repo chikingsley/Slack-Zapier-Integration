@@ -354,7 +354,7 @@ slackApp.action('Create_SoW', async ({ ack, body, context }) => {
   }
 });
 
-app.message('button', async ({ message, say }) => {
+slackApp.message('button', async ({ message, say }) => {
   await say(`The word "button" was mentioned in the channel by <@${message.user}>!`);
 });
 
