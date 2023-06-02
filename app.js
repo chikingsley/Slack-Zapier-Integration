@@ -32,7 +32,7 @@ async function getUserInfo(client, userId) {
   }
   throw new Error('Maximum retry attempts exceeded');
 }
-
+/*
 slackApp.command('/helloworld', async ({ ack, payload, context }) => {
   // acknowledge the request
   ack();
@@ -190,6 +190,7 @@ slackApp.action('open_modal_button', async ({ ack, body, client }) => {
     console.error(error);
   }
 })
+*/
 
 slackApp.message('hi', async ({ message, client, context }) => {
   const user = await getUserInfo(client, message.user);
@@ -372,7 +373,7 @@ slackApp.message('hello', async ({ message, client, context }) => {
   }
 });
 */
-
+/*
 slackApp.event('message', async ({ event }) => {
   if (event.subtype === 'message_changed') {
     const originalMessage = event.previous_message;
@@ -517,12 +518,7 @@ slackApp.view('info_request', async ({ ack, view, body, client, context }) => {
   });
   console.log('Data has been stored and sent');
 });
-
-(async () => {
-  // Start your app
-  await slackApp.start(process.env.PORT || 3000);
-  console.log('⚡️ Bolt app is running!');
-})();
+*/
 
 (async () => {
   await slackApp.start(process.env.PORT || 3000);
