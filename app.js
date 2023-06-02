@@ -222,8 +222,6 @@ slackApp.message('hi', async ({ message, client, context }) => {
 });
 
 slackApp.message('hello', async ({ message, client, context }) => {
-  const user = await getUserInfo(client, message.user);
-  const fullName = user && user.profile.real_name;
   const channelid = message.channel;
   try {
     const result = await slackApp.client.chat.postMessage({
