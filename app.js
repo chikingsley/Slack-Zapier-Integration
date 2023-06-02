@@ -190,7 +190,6 @@ slackApp.action('open_modal_button', async ({ ack, body, client }) => {
     console.error(error);
   }
 })
-*/
 
 slackApp.message('hi', async ({ message, client, context }) => {
   const user = await getUserInfo(client, message.user);
@@ -248,7 +247,6 @@ slackApp.message('hello', async ({ message, client, context }) => {
     console.error(error);
   }
 });
-
 
 //makes modal to ger user input to make sow
 slackApp.action('Create_SoW', async ({ ack, body, client, context }) => {
@@ -515,7 +513,6 @@ slackApp.view('info_request', async ({ ack, view, body, client, context }) => {
   });
   console.log('Data has been stored and sent');
 });
-*/
 
 (async () => {
   await slackApp.start(process.env.PORT || 3000);
