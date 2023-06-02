@@ -450,20 +450,17 @@ slackApp.view('info_request', async ({ ack, view, body, client, context }) => {
     channel: channelId,
     text: `The submitted values are: ${JSON.stringify(user_inputs, null, 2)}`,
   });
-
-  axios.post('https://hooks.zapier.com/hooks/catch/15387298/3t652em/', user_inputs);
-
+  axios.post('https://hooks.zapier.com/hooks/catch/15387298/3t652em/', {
+    user_input: user_inputs
+  });
   console.log('Data has been stored and sent');
 });
-
 
 (async () => {
   // Start your app
   await slackApp.start(process.env.PORT || 3000);
   console.log('⚡️ Bolt app is running!');
 })();
-
-
 
 (async () => {
   await slackApp.start(process.env.PORT || 3000);
