@@ -199,37 +199,25 @@ slackApp.message('hi', async ({ message, client, context }) => {
     const result = await slackApp.client.chat.postMessage({
       token: context.botToken,
       channel: channelid,
-      text: `Hello, ${fullName}!\n It's good to see you 😇. What do you want to do today?\n Pick one⬇️`,
-      //respond hello with user's full name - ask what they want to do -> pick one
+      text: `Hello, ${fullName}!\nIt's good to see you 😇. What do you want to do today?`,
       blocks: [
         {
           type: 'section',
           text: {
             type: 'mrkdwn',
-            text: `Hello, ${fullName}!\n It's good to see you 😇. What do you want to do today?\n Pick one⬇️`,
+            text: `Hello, ${fullName}!\nIt's good to see you 😇. What do you want to do today?`,
           },
-        },
-        // button option encoded in blocks
-        {
-          type: 'actions',
-          elements: [
-            {
-              type: 'button',
-              text: {
-                type: 'plain_text',
-                text: 'Create SoW',
-              },
-              action_id: 'Create_SoW',
-            },
-          ],
         },
       ],
     });
     console.log(result);
-  }
-  catch (error) {
+  } catch (error) {
     console.error(error);
   }
+  axios.post('https://hooks.zapier.com/hooks/catch/15387298/3t652em/', {
+    user_input: 'hi'
+  });
+  console.log('api sent hi');
 });
 
 /*
