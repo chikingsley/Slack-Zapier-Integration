@@ -32,7 +32,7 @@ async function getUserInfo(client, userId) {
   }
   throw new Error('Maximum retry attempts exceeded');
 }
-/*
+
 slackApp.command('/helloworld', async ({ ack, payload, context }) => {
   // acknowledge the request
   ack();
@@ -249,7 +249,7 @@ slackApp.message('hello', async ({ message, client, context }) => {
   }
 });
 
-/*
+
 //makes modal to ger user input to make sow
 slackApp.action('Create_SoW', async ({ ack, body, client, context }) => {
   // acknowledge the button request
@@ -341,8 +341,7 @@ slackApp.action('Create_SoW', async ({ ack, body, client, context }) => {
     console.error(error);
   }
 });
-*/
-/*
+
 slackApp.message('hello', async ({ message, client, context }) => {
   const channelid = message.channel;
   try {
@@ -370,8 +369,8 @@ slackApp.message('hello', async ({ message, client, context }) => {
     console.error(error);
   }
 });
-*/
-/*
+
+
 slackApp.event('message', async ({ event }) => {
   if (event.subtype === 'message_changed') {
     const originalMessage = event.previous_message;
