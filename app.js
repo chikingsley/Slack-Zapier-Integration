@@ -343,7 +343,7 @@ slackApp.action('Create_SoW', async ({ ack, body, client, context }) => {
   }
 });
 */
-
+/*
 slackApp.message('hello', async ({ message, client, context }) => {
   const channelid = message.channel;
   try {
@@ -371,7 +371,7 @@ slackApp.message('hello', async ({ message, client, context }) => {
     console.error(error);
   }
 });
-
+*/
 
 slackApp.event('message', async ({ event }) => {
   if (event.subtype === 'message_changed') {
